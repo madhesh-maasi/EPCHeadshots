@@ -20,6 +20,8 @@ import { useState, useEffect } from "react";
 interface IProp {
   sp: any;
   context: any;
+  ListName: string;
+  LibraryName: string;
 }
 
 interface INavigate {
@@ -64,6 +66,17 @@ const MainHeadShot = (props: IProp): JSX.Element => {
   const getErrorFunction = (errMSG: any) => {
     console.log("Error Message : ", errMSG);
   };
+
+  /* Home page function section */
+  const getHomePage = () => {
+    setIsOverAllNavigate({
+      SubmitHS: false,
+      CheckHSP: false,
+      RetrieveHS: false,
+      SubmitHSQ: false,
+      RAG: false,
+    });
+  }
 
   /* Current User function */
   const getCurrentUser = async () => {
@@ -381,6 +394,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               sp={props.sp}
               context={props.context}
               currentUser={currentUser}
+              ListName={props.ListName}
+              LibraryName={props.LibraryName}
+              homePage={getHomePage}
             />
           )}
           {isOverAllNavigate.CheckHSP && (
@@ -388,6 +404,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               sp={props.sp}
               context={props.context}
               currentUser={currentUser}
+              ListName={props.ListName}
+              LibraryName={props.LibraryName}
+              homePage={getHomePage}
             />
           )}
           {isOverAllNavigate.RetrieveHS && (
@@ -395,6 +414,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               sp={props.sp}
               context={props.context}
               currentUser={currentUser}
+              ListName={props.ListName}
+              LibraryName={props.LibraryName}
+              homePage={getHomePage}
             />
           )}
           {isOverAllNavigate.SubmitHSQ && (
@@ -402,6 +424,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               sp={props.sp}
               context={props.context}
               currentUser={currentUser}
+              ListName={props.ListName}
+              LibraryName={props.LibraryName}
+              homePage={getHomePage}
             />
           )}
         </div>
