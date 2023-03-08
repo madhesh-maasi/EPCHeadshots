@@ -1,0 +1,48 @@
+@import "~office-ui-fabric-react/dist/sass/References.scss";
+.FormSec {
+    display: flex;
+}
+
+.FormInputSec {
+    width: 44%;
+}
+
+.FormIconSec {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.FormNaveLable {
+    margin-left: 26px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.FormBTN {
+    padding: 6px 20px;
+    font-weight: 600;
+}
+
+.tooltipSection {
+    position: relative;
+    margin-left: 26px;
+    .tooltipBody {
+        visibility: hidden;
+        width: 300px;
+        background-color: #002649;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+    }
+    &:hover {
+        .tooltipBody {
+            visibility: visible;
+        }
+    }
+}

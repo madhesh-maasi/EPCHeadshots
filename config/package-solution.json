@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "anm-headshot-client-side-solution",
+    "id": "f7dbc8e0-3c78-452d-9cfc-e5166f3238c0",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "anm-headshot description"
+      },
+      "longDescription": {
+        "default": "anm-headshot description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "anm-headshot Feature",
+        "description": "The feature that activates elements of the anm-headshot solution.",
+        "id": "6df22fe8-63ed-4ac6-9ef5-f72bae515fb0",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/anm-headshot.sppkg"
+  }
+}

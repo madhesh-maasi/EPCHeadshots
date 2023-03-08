@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "anm-headshot-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/anmHeadshot/AnmHeadshotWebPart.js",
+          "manifest": "./src/webparts/anmHeadshot/AnmHeadshotWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "AnmHeadshotWebPartStrings": "lib/webparts/anmHeadshot/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
+  }
+}

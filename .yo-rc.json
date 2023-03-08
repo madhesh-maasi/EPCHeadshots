@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "anm-headshot",
+    "libraryId": "f7dbc8e0-3c78-452d-9cfc-e5166f3238c0",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "anm-headshot",
+    "solutionShortDescription": "anm-headshot description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
