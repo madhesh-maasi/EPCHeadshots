@@ -36,6 +36,7 @@ interface ICurUser {
   Id: number;
   Email: string[];
   Name: string;
+  Title: string;
 }
 
 const MainHeadShot = (props: IProp): JSX.Element => {
@@ -52,6 +53,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
     Id: null,
     Email: [],
     Name: "",
+    Title: "",
   };
   /* Local variable section end */
 
@@ -76,18 +78,34 @@ const MainHeadShot = (props: IProp): JSX.Element => {
       SubmitHSQ: false,
       RAG: false,
     });
-  }
+  };
 
   /* Current User function */
   const getCurrentUser = async () => {
     await props.sp.web.currentUser
       .get()
       .then((data: any) => {
+        let curUserName: string = "";
+        let arrUserName: string[] = data.Title.split(" ");
+        let arrSplitName: string[] = [];
+        let arrUserNameLength: number = arrUserName.length - 1;
+        arrUserName.forEach((val: string, index: number) => {
+          if (index <= arrUserNameLength) {
+            if (!curUserName) {
+              arrSplitName = val.split(",");
+              curUserName = arrSplitName[0];
+            } else {
+              arrSplitName = val.split(",");
+              curUserName = curUserName + "_" + arrSplitName[0];
+            }
+          }
+        });
         data
           ? setCurrentUser({
               Id: data.Id,
               Email: [data.Email],
               Name: data.Title,
+              Title: curUserName,
             })
           : setCurrentUser({ ...currentUserDetails });
       })

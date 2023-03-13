@@ -63,6 +63,9 @@ interface IDropdown {
 }
 
 let userMail: string[] = [];
+let curUserName: string = "";
+let arrAttachments: any[] = [];
+let locFileArray: any[] = [];
 
 const SubmitHS = (props: any): JSX.Element => {
   /* Local variable section start */
@@ -86,6 +89,7 @@ const SubmitHS = (props: any): JSX.Element => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [folderName, setFolderName] = useState<string>(props.currentUser.Title);
   /* State create section end */
 
   /* function section start */
@@ -146,12 +150,91 @@ const SubmitHS = (props: any): JSX.Element => {
       RequestJSON: currentJSON,
     })
       .then((res: any) => {
-        setIsSubmit(false);
-        props.homePage();
+        addLibraryData(currentJSON);
       })
       .catch((error: any) => {
         getErrorFunction(error);
       });
+  };
+
+  /* Library documents datas add function */
+  const addLibraryData = async (currentJSON: IListHS) => {
+    await props.sp.web.lists
+      .getByTitle(props.LibraryName)
+      .rootFolder.folders.add(folderName)
+      .then(async (res: any) => {
+        await res.folder
+          .getItem()
+          .then(async (item: any) => {
+            await item
+              .update({
+                Status: currentJSON.Status,
+                EmployeeId: currentJSON.EmployeeId,
+                ChargeCode: currentJSON.ChargeCode,
+                AdditionalNotes: currentJSON.AdditionalNotes,
+              })
+              .then((val: any) => {
+                for (let i = 0; locFileArray.length > i; i++) {
+                  props.sp.web
+                    .getFolderByServerRelativeUrl(res.data.ServerRelativeUrl)
+                    .files.add(
+                      locFileArray[i].name,
+                      locFileArray[i].content,
+                      true
+                    )
+                    .then(async (data: any) => {
+                      await data.file
+                        .getItem()
+                        .then(async (item: any) => {
+                          await item
+                            .update({
+                              Status: currentJSON.Status,
+                              EmployeeId: currentJSON.EmployeeId,
+                              ChargeCode: currentJSON.ChargeCode,
+                              AdditionalNotes: currentJSON.AdditionalNotes,
+                            })
+                            .then((val: any) => {
+                              if (locFileArray.length == i + 1) {
+                                setIsSubmit(false);
+                                props.homePage();
+                              }
+                            })
+                            .catch((error: any) => {
+                              getErrorFunction(error);
+                            });
+                        })
+                        .catch((error: any) => {
+                          getErrorFunction(error);
+                        });
+                    })
+                    .catch((error: any) => {
+                      getErrorFunction(error);
+                    });
+                }
+              })
+              .catch((error: any) => {
+                getErrorFunction(error);
+              });
+          })
+          .catch((error: any) => {
+            getErrorFunction(error);
+          });
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
+      });
+  };
+
+  /* get all files function section */
+  const getFiles = (doc: any) => {
+    arrAttachments = doc.target.files;
+    for (let i = 0; i < arrAttachments.length; i++) {
+      locFileArray.push({
+        name: arrAttachments[i].name,
+        content: arrAttachments[i],
+        Index: i,
+      });
+    }
   };
   /* function section end */
 
@@ -190,6 +273,20 @@ const SubmitHS = (props: any): JSX.Element => {
                     return data.id;
                   })[0];
                   userMail = e.map((data: any) => {
+                    let arrUserName: string[] = data.text.split(" ");
+                    let arrSplitName: string[] = [];
+                    let arrUserNameLength: number = arrUserName.length - 1;
+                    arrUserName.forEach((val: string, index: number) => {
+                      if (index <= arrUserNameLength) {
+                        if (!curUserName) {
+                          arrSplitName = val.split(",");
+                          curUserName = arrSplitName[0];
+                        } else {
+                          arrSplitName = val.split(",");
+                          curUserName = curUserName + "_" + arrSplitName[0];
+                        }
+                      }
+                    });
                     return data.secondaryText;
                   });
                   setNewRecord({ ...newRecord });
@@ -220,6 +317,11 @@ const SubmitHS = (props: any): JSX.Element => {
                 onChange={(e: any) => {
                   newRecord.EmployeeId = e.target.value;
                   setNewRecord({ ...newRecord });
+                  setFolderName(
+                    curUserName
+                      ? curUserName + "_" + newRecord.EmployeeId
+                      : props.currentUser.Title + "_" + newRecord.EmployeeId
+                  );
                 }}
               />
             </div>
@@ -314,7 +416,11 @@ const SubmitHS = (props: any): JSX.Element => {
               ATTACHMENT:<span style={{ color: "red" }}> *</span>
             </Label>
             <div className={styles.FormInputSec}>
-              <input type="file" multiple={true} />
+              <input
+                type="file"
+                multiple={true}
+                onChange={(e: any) => getFiles(e)}
+              />
               {/* <TextField placeholder="Please enter text here" multiline={true} /> */}
             </div>
           </div>
