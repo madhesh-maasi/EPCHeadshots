@@ -7,6 +7,17 @@ import {
 import styles from "./SubmitHSQ.module.scss";
 import { useState, useEffect } from "react";
 
+interface ISubHeadShot {
+  Name: number;
+  EmployeeId: string | number;
+  Division: string;
+  Title: string;
+  ChargeCode: string | number;
+  Subject: string;
+  HeadShotQuestion:string
+  Attachments?: any;
+}
+
 const SubmitHSQ = (props: any): JSX.Element => {
   return (
     <div>

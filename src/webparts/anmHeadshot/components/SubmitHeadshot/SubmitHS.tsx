@@ -90,6 +90,7 @@ const SubmitHS = (props: any): JSX.Element => {
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>(props.currentUser.Title);
+  const [isValidCharCode,setIsValidCharCode]=useState<boolean>(false);
   /* State create section end */
 
   /* function section start */
@@ -100,17 +101,16 @@ const SubmitHS = (props: any): JSX.Element => {
 
   /* get list choice data function */
   const getDivisionChoice = async () => {
-    await SPServices.SPGetChoices({
-      Listname: props.ListName,
-      FieldName: "Status",
+    await SPServices.SPReadItems({
+      Listname: "MarketingDivision"
     })
       .then((res: any) => {
         let arrDropdown: any[] = [];
-        res.Choices.length > 0 &&
-          res.Choices.forEach((data: any) => {
+        //res.Choices.length > 0 &&
+        res.forEach((data: any) => {
             arrDropdown.push({
-              key: data,
-              text: data,
+              key: data.Title,
+              text: data.Title,
             });
           });
         setDivisionChoice(arrDropdown);
@@ -196,6 +196,7 @@ const SubmitHS = (props: any): JSX.Element => {
                             .then((val: any) => {
                               if (locFileArray.length == i + 1) {
                                 setIsSubmit(false);
+                                alert("Headshot details are updated successfully.")
                                 props.homePage();
                               }
                             })
@@ -235,6 +236,9 @@ const SubmitHS = (props: any): JSX.Element => {
         Index: i,
       });
     }
+  
+    
+    
   };
   /* function section end */
 
@@ -243,6 +247,29 @@ const SubmitHS = (props: any): JSX.Element => {
     setIsLoader(true);
     getDivisionChoice();
   }, []);
+
+
+  function validateText(text) {
+    const letterRegex = /[a-zA-Z]/g;
+    const digitRegex = /[0-9]/g;
+    const letters = text.match(letterRegex);
+    const digits = text.match(digitRegex);
+    return letters && digits && letters.length >= 3 && digits.length >= 3;
+  }
+  
+  function onFormChange(data:ISubHeadShot)
+  {
+        var isAttachEmpty=arrAttachments.length;
+    
+        if(data.Division&&data.EmployeeId&&isValidCharCode&&data.Name&&data.ChargeCode&&(isAttachEmpty!==0))
+        {
+            setIsSubmit(true);
+        }
+        else
+        {
+          setIsSubmit(false);
+        }
+  }
 
   return (
     <>
@@ -322,6 +349,7 @@ const SubmitHS = (props: any): JSX.Element => {
                       ? curUserName + "_" + newRecord.EmployeeId
                       : props.currentUser.Title + "_" + newRecord.EmployeeId
                   );
+                  onFormChange(newRecord);
                 }}
               />
             </div>
@@ -350,6 +378,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 onChange={(e: any, text: any) => {
                   newRecord.Division = text.key;
                   setNewRecord({ ...newRecord });
+                  onFormChange(newRecord);
                 }}
               />
             </div>
@@ -360,10 +389,14 @@ const SubmitHS = (props: any): JSX.Element => {
             <Label style={{ width: "18%" }}>TITLE:</Label>
             <div className={styles.FormInputSec}>
               <TextField
-                placeholder="Not Defined"
+                //placeholder="Not Defined"
+                value="Not Defined"
+                readOnly={true}
                 onChange={(e: any) => {
                   newRecord.Title = e.target.value;
                   setNewRecord({ ...newRecord });
+                  onFormChange(newRecord);
+                  
                 }}
               />
             </div>
@@ -377,9 +410,24 @@ const SubmitHS = (props: any): JSX.Element => {
             <div className={styles.FormInputSec}>
               <TextField
                 placeholder="A1B2C3"
-                onChange={(e: any) => {
+                maxLength={6}
+                onBlur={(e: any)=>{
+                  let result=validateText(e.target.value);
+                  if(!result)
+                  {
+                    alert('Charge Code should be 6 digit alpha numeric value.');
+                    setIsValidCharCode(false);
+                  }
+                  else
+                  {
+                    setIsValidCharCode(true);
+                  }
+                }}
+                onChange={(e: any) => 
+                  {
                   newRecord.ChargeCode = e.target.value;
                   setNewRecord({ ...newRecord });
+                  onFormChange(newRecord);
                 }}
               />
             </div>
@@ -405,6 +453,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 onChange={(e: any) => {
                   newRecord.AddNotes = e.target.value;
                   setNewRecord({ ...newRecord });
+                  
                 }}
               />
             </div>
@@ -419,7 +468,8 @@ const SubmitHS = (props: any): JSX.Element => {
               <input
                 type="file"
                 multiple={true}
-                onChange={(e: any) => getFiles(e)}
+                onChange={(e: any) => {getFiles(e);
+                  onFormChange(newRecord);} }
               />
               {/* <TextField placeholder="Please enter text here" multiline={true} /> */}
             </div>
@@ -500,7 +550,7 @@ const SubmitHS = (props: any): JSX.Element => {
           <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
             <div style={{ width: "18%" }}></div>
             <button
-              disabled={isSubmit}
+              disabled={!isSubmit}
               className={styles.FormBTN}
               style={
                 false
@@ -512,10 +562,12 @@ const SubmitHS = (props: any): JSX.Element => {
                     }
               }
               onClick={() => {
-                setIsSubmit(true), getCurrentObject();
+                setIsSubmit(false),
+                getCurrentObject();
               }}
             >
-              {isSubmit ? <Spinner /> : "SUBMIT"}
+              {/* {isSubmit ? "SUBMIT" : "SUBMIT"} */}
+              SUBMIT
             </button>
           </div>
         </div>
