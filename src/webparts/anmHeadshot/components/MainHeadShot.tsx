@@ -129,7 +129,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
     >
       <div
         style={{
-          width: "70%",
+          width: "85%",
         }}
       >
         {/* Label section start */}

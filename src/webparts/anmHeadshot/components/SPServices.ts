@@ -50,8 +50,8 @@ const SPReadItems = async (params: IListItems): Promise<[]> => {
   return await sp.web.lists
     .getByTitle(params.Listname)
     .items.select(params.Select)
-    .filter(filterValue)
     .expand(params.Expand)
+    .filter(filterValue)
     .top(params.Topcount)
     .orderBy(params.Orderby, params.Orderbydecorasc)
     .get();

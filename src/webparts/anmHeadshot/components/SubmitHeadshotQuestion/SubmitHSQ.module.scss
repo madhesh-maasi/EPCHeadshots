@@ -2,9 +2,13 @@
 .FormSec {
     display: flex;
 }
+.FormSecModal{
+    display: flex;
+    align-items: center;
+}
 
-.FormInputSec {
-    width: 44%;
+.FormInputSec{
+    width: 44% !important;
 }
 
 .FormIconSec {

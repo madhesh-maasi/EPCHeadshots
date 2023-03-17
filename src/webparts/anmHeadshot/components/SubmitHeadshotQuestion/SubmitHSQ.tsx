@@ -4,6 +4,7 @@ import {
   PeoplePicker,
   PrincipalType,
 } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import SPServices from "../SPServices";
 import styles from "./SubmitHSQ.module.scss";
 import { useState, useEffect } from "react";
 
@@ -14,11 +15,133 @@ interface ISubHeadShot {
   Title: string;
   ChargeCode: string | number;
   Subject: string;
-  HeadShotQuestion:string
+  HeadShotQuestion: string;
   Attachments?: any;
 }
+interface IDropdown {
+  key: any;
+  text: any;
+}
+let userMail: string[] = [];
+let curUserName: string = "";
+let attachFiles: any[] = [];
+let files: any[] = [];
 
 const SubmitHSQ = (props: any): JSX.Element => {
+  let currentobj = {
+    Name: props.currentUser.Id,
+    EmployeeId: "",
+    Division: "",
+    Title: "",
+    ChargeCode: "",
+    Subject: "",
+    HeadShotQuestion: "",
+
+    Attachments: undefined,
+  };
+
+  const [formdata, setFormdata] = useState(currentobj);
+  const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [charcode, setCharcode] = useState(false);
+
+  //division values
+  const getDivisionChoice = async () => {
+    await SPServices.SPReadItems({
+      Listname: "MarketingDivision",
+    })
+      .then((res: any) => {
+        let arrDropdown: any[] = [];
+        //res.Choices.length > 0 &&
+        res.forEach((data: any) => {
+          arrDropdown.push({
+            key: data.Title,
+            text: data.Title,
+          });
+        });
+        setDivisionChoice(arrDropdown);
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
+      });
+  };
+  //Error
+  const getErrorFunction = (error: any) => {
+    console.log("Error Message : ", error);
+  };
+  //getting Formdata
+  const getFormData = () => {
+    let currentJson = {
+      UserNameId: formdata.Name ? formdata.Name : "",
+      EmployeeId: formdata.EmployeeId ? formdata.EmployeeId : "",
+      Division: formdata.Division ? formdata.Division : "",
+      ChargeCode: formdata.ChargeCode ? formdata.ChargeCode : "",
+      Title: formdata.Title ? formdata.Title : "",
+      Subject: formdata.Subject ? formdata.Subject : "",
+      Description: formdata.HeadShotQuestion ? formdata.HeadShotQuestion : "",
+    };
+    addData(currentJson);
+  };
+  //adding data
+  const addData = async (data) => {
+    await SPServices.SPAddItem({
+      Listname: "Headshot Questions",
+
+      RequestJSON: data,
+    })
+      .then(async (res: any) => {
+        console.log(res, "res");
+
+        await SPServices.SPAddAttachments({
+          ListName: "Headshot Questions",
+          ListID: res.data.ID,
+          Attachments: attachFiles,
+        })
+          .then(() => alert("headshot questions submit successfully"))
+          .catch((error: any) => {
+            getErrorFunction(error);
+          });
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
+      });
+  };
+  //disable submit buttons
+  const onDisableButton = (datas) => {
+    if (
+      datas.Name &&
+      datas.EmployeeId &&
+      datas.ChargeCode &&
+      datas.Subject &&
+      datas.HeadShotQuestion &&
+      datas.Division &&
+      charcode
+    ) {
+      setIsSubmit(true);
+    } else {
+      setIsSubmit(false);
+    }
+  };
+  //get Files from Attachment
+  const getFiles = (e) => {
+    files = e.target.files;
+    attachFiles = [];
+    for (let i = 0; i < files.length; i++) {
+      attachFiles.push({ name: files[i].name, content: files[i] });
+    }
+  };
+  const validateCharcode = (text) => {
+    const letterRegex = /[a-zA-Z]/g;
+    const digitRegex = /[0-9]/g;
+    const letters = text.match(letterRegex);
+    const digits = text.match(digitRegex);
+    return letters && digits && letters.length >= 3 && digits.length >= 3;
+  };
+
+  useEffect(() => {
+    getDivisionChoice();
+  }, []);
+
   return (
     <div>
       {/* NAME section */}
@@ -36,7 +159,32 @@ const SubmitHSQ = (props: any): JSX.Element => {
             showHiddenInUI={false}
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
-            onChange={(e) => {}}
+            onChange={(e) => {
+              userMail = [];
+
+              formdata.Name = e.map((data: any) => {
+                return data.id;
+              })[0];
+
+              // userMail = e.map((data: any) => {
+              //   let arrUserName: string[] = data.text.split(" ");
+              //   let arrSplitName: string[] = [];
+              //   let arrUserNameLength: number = arrUserName.length - 1;
+              //   arrUserName.forEach((val: string, index: number) => {
+              //     if (index <= arrUserNameLength) {
+              //       if (!curUserName) {
+              //         arrSplitName = val.split(",");
+              //         curUserName = arrSplitName[0];
+              //       } else {
+              //         arrSplitName = val.split(",");
+              //         curUserName = curUserName + "_" + arrSplitName[0];
+              //       }
+              //     }
+              //   });
+              //   return data.secondaryText;
+              // });
+              setFormdata({ ...formdata });
+            }}
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
@@ -56,7 +204,14 @@ const SubmitHSQ = (props: any): JSX.Element => {
           EMPLOYEE ID:<span style={{ color: "red" }}> *</span>
         </Label>
         <div className={styles.FormInputSec}>
-          <TextField placeholder="Please enter Employee Id" />
+          <TextField
+            placeholder="Please enter Employee Id"
+            onChange={(e: any) => {
+              formdata.EmployeeId = e.target.value;
+              setFormdata({ ...formdata });
+              onDisableButton(formdata);
+            }}
+          />
         </div>
         <Label className={styles.FormNaveLable}>
           To find your Employee ID, click
@@ -78,9 +233,13 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <div className={styles.FormInputSec}>
           <Dropdown
             placeholder="Please select value here"
-            options={[]}
-            selectedKey={""}
-            onChange={(e: any, text: any) => {}}
+            options={divisionChoice}
+            selectedKey={formdata.Division}
+            onChange={(e: any, text: any) => {
+              formdata.Division = text.key;
+              setFormdata({ ...formdata });
+              onDisableButton(formdata);
+            }}
           />
         </div>
       </div>
@@ -89,7 +248,14 @@ const SubmitHSQ = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <Label style={{ width: "18%" }}>TITLE:</Label>
         <div className={styles.FormInputSec}>
-          <TextField placeholder="Not Defined" />
+          <TextField
+            value="Not Defined"
+            readOnly={true}
+            onChange={(e: any) => {
+              formdata.Title = e.target.value;
+              setFormdata({ ...formdata });
+            }}
+          />
         </div>
       </div>
 
@@ -99,7 +265,23 @@ const SubmitHSQ = (props: any): JSX.Element => {
           CHARGE CODE:<span style={{ color: "red" }}> *</span>
         </Label>
         <div className={styles.FormInputSec}>
-          <TextField placeholder="A1B2C3" />
+          <TextField
+            placeholder="A1B2C3"
+            onBlur={(e: any) => {
+              let result = validateCharcode(e.target.value);
+              if (!result) {
+                alert("Charge Code should be 6 digit alpha numeric value.");
+                setCharcode(false);
+              } else {
+                setCharcode(true);
+              }
+            }}
+            onChange={(e: any) => {
+              formdata.ChargeCode = e.target.value;
+              setFormdata({ ...formdata });
+              onDisableButton(formdata);
+            }}
+          />
         </div>
         <Label className={styles.FormNaveLable}>
           To find your Employee ID, click
@@ -119,7 +301,14 @@ const SubmitHSQ = (props: any): JSX.Element => {
           SUBJECT:<span style={{ color: "red" }}> *</span>
         </Label>
         <div className={styles.FormInputSec}>
-          <TextField placeholder="Please enter subject here" />
+          <TextField
+            placeholder="Please enter subject here"
+            onChange={(e: any) => {
+              formdata.Subject = e.target.value;
+              setFormdata({ ...formdata });
+              onDisableButton(formdata);
+            }}
+          />
         </div>
       </div>
 
@@ -132,6 +321,11 @@ const SubmitHSQ = (props: any): JSX.Element => {
           <TextField
             placeholder="Please enter headshot question here"
             multiline={true}
+            onChange={(e: any) => {
+              formdata.HeadShotQuestion = e.target.value;
+              setFormdata({ ...formdata });
+              onDisableButton(formdata);
+            }}
           />
         </div>
       </div>
@@ -140,7 +334,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <Label style={{ width: "18%" }}>ATTACHMENT:</Label>
         <div style={{ width: "82%" }}>
-          <input type="file" />
+          <input type="file" multiple={true} onChange={(e) => getFiles(e)} />
         </div>
       </div>
 
@@ -148,10 +342,10 @@ const SubmitHSQ = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
         <button
-          disabled={true}
+          disabled={!isSubmit}
           className={styles.FormBTN}
           style={
-            true
+            false
               ? { border: "none", background: "#f4f4f4", cursor: "auto" }
               : {
                   border: "1px solid #8a8886",
@@ -159,6 +353,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
                   cursor: "pointer",
                 }
           }
+          onClick={() => getFormData()}
         >
           SUBMIT
         </button>

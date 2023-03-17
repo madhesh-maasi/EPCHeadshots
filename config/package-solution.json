@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "anm-headshot-client-side-solution",
+    "name": "anm-headshot-new-client-side-solution",
     "id": "f7dbc8e0-3c78-452d-9cfc-e5166f3238c0",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
@@ -35,6 +35,6 @@
     ]
   },
   "paths": {
-    "zippedPackage": "solution/anm-headshot.sppkg"
+    "zippedPackage": "solution/anm-headshot-new.sppkg"
   }
 }
