@@ -6,8 +6,65 @@ import {
 } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import styles from "./RetrieveHS.module.scss";
 import { useState, useEffect } from "react";
+import SPServices from "../SPServices";
 
-const RetrieveHS = (props: any): JSX.Element => {
+const RetrieveHS = (props: any): JSX.Element => 
+{
+  console.log(props);
+  const [selectedUser,setSelectedUser]=useState(props.currentUser.Id);
+  const [btnDisable,setbtnDisbale]=useState(false);
+
+  const getDatas = async (UserID) => {
+    await SPServices.SPReadItems({
+      Listname: "Headshot",
+      Filter: [
+        {
+          FilterKey: "UserName",
+          FilterValue: UserID,
+          Operator: "eq",
+        }
+      ],
+      Select: "*,UserName/Title,UserName/EMail",
+      Expand: "UserName",
+    }).then((res: any) => 
+    {
+      console.log(res);
+      
+      let URL='';  
+      for(let i=0;i<res.length;i++)
+      {
+          if(res[i].EmployeeId)
+          {
+            if(res[i].UserName)
+            {
+              
+              if(res[i].UserName.Title)
+              {
+                let userName=res[i].UserName.Title.split(',');
+                let URLSecondHalf="";
+                URLSecondHalf=userName[0].trim()+"_"+userName[1].trim()+"_"+res[i].EmployeeId
+                URL="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/"+URLSecondHalf
+              }
+            }
+            break;
+            
+          }
+      }
+      if(URL)
+      {
+        window.open(URL, '_blank');
+      }
+      else
+      {
+        alert("Could not find headshot for given user. Please try with a different user.");
+      }
+
+    }).catch((error: any) => 
+    {
+        alert("Something went wrong. Please contact system admin.")
+    });
+  };
+
   return (
     <div>
       {/* NAME section */}
@@ -25,7 +82,18 @@ const RetrieveHS = (props: any): JSX.Element => {
             showHiddenInUI={false}
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
-            onChange={(e) => {}}
+            onChange={(e) => {
+              if(e.length>0)
+              {
+                setSelectedUser(e[0].id);
+                setbtnDisbale(false);
+              }
+              else
+              {
+                setbtnDisbale(true);
+              }
+                
+            }}
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
@@ -43,8 +111,11 @@ const RetrieveHS = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
         <button
-          disabled={false}
+         disabled={btnDisable}
           className={styles.FormBTN}
+          onClick={(e)=>{
+            getDatas(selectedUser);
+          }}
           style={
             false
               ? { border: "none", background: "#f4f4f4", cursor: "auto" }

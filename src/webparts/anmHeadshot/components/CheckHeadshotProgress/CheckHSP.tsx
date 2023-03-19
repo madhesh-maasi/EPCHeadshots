@@ -24,8 +24,11 @@ const updatavalue = {
   id: null,
   Status: "",
   GoFishDigitalEditor: "",
+  index:""
 };
 let getData: any[] = [];
+
+
 
 const CheckHSP = (props: any): JSX.Element => {
   const [checkprogress, setCheckprogress] = useState(false);
@@ -33,7 +36,8 @@ const CheckHSP = (props: any): JSX.Element => {
   const [data, setdata] = useState([]);
   const [ppvalue, setPPvalue] = useState(updatavalue);
   const [choicevalue, setChoicevalue] = useState<IDropdown[]>();
-
+  const [selectedUser,setSelectedUser]=useState(props.currentUser.Id);
+  const [btnDisable,setbtnDisbale]=useState(false);
   //column create
 
   let column = [
@@ -65,17 +69,18 @@ const CheckHSP = (props: any): JSX.Element => {
       fieldName: "Action",
       minWidth: 250,
       maxWidth: 250,
-      onRender: (item: any) => {
-        console.log("item", item);
-
+      onRender: (item: any,index) => {
+        let arrIndex=index;
         return (
-          <p>
+          <p style={{margin:0}}>
             <Icon
+            style={{cursor:"pointer"}}
               className={styles.FormIconSec}
               iconName={"edit"}
               onClick={() => {
                 setPPvalue({
                   id: item.ID,
+                  index:arrIndex,
                   Status: "Received",
                   GoFishDigitalEditor: item.GoFishDigitalEditor,
                 });
@@ -109,28 +114,26 @@ const CheckHSP = (props: any): JSX.Element => {
             });
           });
         setChoicevalue(arrDropdown);
-        getDatas();
+        getDatas(props.currentUser.Id);
       })
       .catch((error: any) => {
         getErrorFunction(error);
       });
   };
   //getdata from headshot
-  const getDatas = async () => {
+  const getDatas = async (UserID) => {
     await SPServices.SPReadItems({
       Listname: "Headshot",
       Filter: [
         {
           FilterKey: "UserName",
-          FilterValue: props.currentUser.Id,
+          FilterValue: UserID,
           Operator: "eq",
         },
       ],
       Select: "*,UserName/Title,UserName/EMail",
       Expand: "UserName",
     }).then((res: any) => {
-      console.log(res, "res");
-
       getData = [];
       res.forEach((data) => {
         getData.push({
@@ -142,19 +145,33 @@ const CheckHSP = (props: any): JSX.Element => {
             : "",
         });
       });
-      setdata(getData);
+      setdata([...getData]);
+    }).catch((error: any) => {
+      getErrorFunction(error);
     });
   };
+
   const updatadata = async () => {
     let res = {
       Status: ppvalue.Status,
       GoFishDigitalEditor: ppvalue.GoFishDigitalEditor,
     };
+
+      data[ppvalue.index].Status=ppvalue.Status;
+      data[ppvalue.index].GoFishDigitalEditor=ppvalue.GoFishDigitalEditor;
+      setdata([...getData]);
+      setCheckprogress(false);
+    
     await SPServices.SPUpdateItem({
       Listname: "Headshot",
       ID: ppvalue.id,
       RequestJSON: res,
-    }).then((res: any) => setCheckprogress(false));
+    }).then((res: any) => 
+    {
+        console.log("Upadted");
+    }).catch(function(error){
+      alert("Something went wrong. Please contact your system admin.")
+    })
   };
   useEffect(() => {
     getDivisionChoice();
@@ -177,7 +194,17 @@ const CheckHSP = (props: any): JSX.Element => {
             showHiddenInUI={false}
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
-            onChange={(e) => {}}
+            onChange={(e) => {
+              if(e.length>0)
+              {
+                setSelectedUser(e[0].id);
+                setbtnDisbale(false);
+              }
+              else
+              {
+                setbtnDisbale(true);
+              }
+            }}
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
@@ -195,7 +222,7 @@ const CheckHSP = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
         <button
-          disabled={false}
+          disabled={btnDisable}
           className={styles.FormBTN}
           style={
             false
@@ -206,7 +233,10 @@ const CheckHSP = (props: any): JSX.Element => {
                   cursor: "pointer",
                 }
           }
-          onClick={() => setProgress(true)}
+          onClick={(e) => {
+            getDatas(selectedUser);
+            setProgress(true);
+          }}
         >
           CHECK PROGRESS
         </button>
@@ -215,12 +245,24 @@ const CheckHSP = (props: any): JSX.Element => {
       {progress ? (
         <>
           <DetailsList
+          styles={{
+            root:{
+              selectors:{
+              ".ms-DetailsRow-fields":{
+                maxHeight:42
+
+              }
+              }
+            }
+          }}
             items={data}
             columns={column}
             setKey="key"
             selectionMode={SelectionMode.none}
           />
+           {data.length==0?<label className={styles.labelStyle}>No Records Found</label>:""}
         </>
+       
       ) : (
         ""
       )}
