@@ -102,15 +102,16 @@ const SubmitHS = (props: any): JSX.Element => {
   /* get list choice data function */
   const getDivisionChoice = async () => {
     await SPServices.SPReadItems({
-      Listname: "MarketingDivision"
+      Listname: "HSDivisions"
     })
       .then((res: any) => {
         let arrDropdown: any[] = [];
         //res.Choices.length > 0 &&
         res.forEach((data: any) => {
+          if(data.Title)
             arrDropdown.push({
-              key: data.Title,
-              text: data.Title,
+              key: data.Title.trim(),
+              text: data.Title.trim(),
             });
           });
         setDivisionChoice(arrDropdown);
