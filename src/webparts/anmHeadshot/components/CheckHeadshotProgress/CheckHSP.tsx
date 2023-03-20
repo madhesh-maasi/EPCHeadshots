@@ -7,6 +7,7 @@ import {
   DetailsList,
   SelectionMode,
   Modal,
+  Spinner,
 } from "@fluentui/react";
 import {
   PeoplePicker,
@@ -24,20 +25,19 @@ const updatavalue = {
   id: null,
   Status: "",
   GoFishDigitalEditor: "",
-  index:""
+  index: "",
 };
 let getData: any[] = [];
-
-
 
 const CheckHSP = (props: any): JSX.Element => {
   const [checkprogress, setCheckprogress] = useState(false);
   const [progress, setProgress] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
   const [data, setdata] = useState([]);
   const [ppvalue, setPPvalue] = useState(updatavalue);
   const [choicevalue, setChoicevalue] = useState<IDropdown[]>();
-  const [selectedUser,setSelectedUser]=useState(props.currentUser.Id);
-  const [btnDisable,setbtnDisbale]=useState(false);
+  const [selectedUser, setSelectedUser] = useState(props.currentUser.Id);
+  const [btnDisable, setbtnDisbale] = useState(false);
   //column create
 
   let column = [
@@ -69,18 +69,18 @@ const CheckHSP = (props: any): JSX.Element => {
       fieldName: "Action",
       minWidth: 250,
       maxWidth: 250,
-      onRender: (item: any,index) => {
-        let arrIndex=index;
+      onRender: (item: any, index) => {
+        let arrIndex = index;
         return (
-          <p style={{margin:0}}>
+          <p style={{ margin: 0 }}>
             <Icon
-            style={{cursor:"pointer"}}
+              style={{ cursor: "pointer" }}
               className={styles.FormIconSec}
               iconName={"edit"}
               onClick={() => {
                 setPPvalue({
                   id: item.ID,
-                  index:arrIndex,
+                  index: arrIndex,
                   Status: "Received",
                   GoFishDigitalEditor: item.GoFishDigitalEditor,
                 });
@@ -133,22 +133,24 @@ const CheckHSP = (props: any): JSX.Element => {
       ],
       Select: "*,UserName/Title,UserName/EMail",
       Expand: "UserName",
-    }).then((res: any) => {
-      getData = [];
-      res.forEach((data) => {
-        getData.push({
-          Status: data.Status,
-          UserName: data.UserNameId ? data.UserName.Title : "",
-          ID: data.ID ? data.ID : "",
-          GoFishDigitalEditor: data.GoFishDigitalEditor
-            ? data.GoFishDigitalEditor
-            : "",
+    })
+      .then((res: any) => {
+        getData = [];
+        res.forEach((data) => {
+          getData.push({
+            Status: data.Status,
+            UserName: data.UserNameId ? data.UserName.Title : "",
+            ID: data.ID ? data.ID : "",
+            GoFishDigitalEditor: data.GoFishDigitalEditor
+              ? data.GoFishDigitalEditor
+              : "",
+          });
         });
+        setdata([...getData]);
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
       });
-      setdata([...getData]);
-    }).catch((error: any) => {
-      getErrorFunction(error);
-    });
   };
 
   const updatadata = async () => {
@@ -157,21 +159,24 @@ const CheckHSP = (props: any): JSX.Element => {
       GoFishDigitalEditor: ppvalue.GoFishDigitalEditor,
     };
 
-      data[ppvalue.index].Status=ppvalue.Status;
-      data[ppvalue.index].GoFishDigitalEditor=ppvalue.GoFishDigitalEditor;
-      setdata([...getData]);
-      setCheckprogress(false);
-    
+    data[ppvalue.index].Status = ppvalue.Status;
+    data[ppvalue.index].GoFishDigitalEditor = ppvalue.GoFishDigitalEditor;
+    setdata([...getData]);
+    setCheckprogress(false);
+    setIsLoader(true);
+
     await SPServices.SPUpdateItem({
       Listname: "Headshot",
       ID: ppvalue.id,
       RequestJSON: res,
-    }).then((res: any) => 
-    {
-        console.log("Upadted");
-    }).catch(function(error){
-      alert("Something went wrong. Please contact your system admin.")
     })
+      .then((res: any) => {
+        setIsLoader(false);
+        console.log("Upadted");
+      })
+      .catch(function (error) {
+        alert("Something went wrong. Please contact your system admin.");
+      });
   };
   useEffect(() => {
     getDivisionChoice();
@@ -195,13 +200,10 @@ const CheckHSP = (props: any): JSX.Element => {
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
             onChange={(e) => {
-              if(e.length>0)
-              {
+              if (e.length > 0) {
                 setSelectedUser(e[0].id);
                 setbtnDisbale(false);
-              }
-              else
-              {
+              } else {
                 setbtnDisbale(true);
               }
             }}
@@ -245,24 +247,26 @@ const CheckHSP = (props: any): JSX.Element => {
       {progress ? (
         <>
           <DetailsList
-          styles={{
-            root:{
-              selectors:{
-              ".ms-DetailsRow-fields":{
-                maxHeight:42
-
-              }
-              }
-            }
-          }}
+            styles={{
+              root: {
+                selectors: {
+                  ".ms-DetailsRow-fields": {
+                    maxHeight: 42,
+                  },
+                },
+              },
+            }}
             items={data}
             columns={column}
             setKey="key"
             selectionMode={SelectionMode.none}
           />
-           {data.length==0?<label className={styles.labelStyle}>No Records Found</label>:""}
+          {data.length == 0 ? (
+            <label className={styles.labelStyle}>No Records Found</label>
+          ) : (
+            ""
+          )}
         </>
-       
       ) : (
         ""
       )}
@@ -283,7 +287,7 @@ const CheckHSP = (props: any): JSX.Element => {
           >
             <Icon
               iconName="Cancel"
-              style={{ fontSize: 20 ,cursor:"pointer"}}
+              style={{ fontSize: 20, cursor: "pointer" }}
               onClick={() => setCheckprogress(false)}
             ></Icon>
           </div>
@@ -327,6 +331,7 @@ const CheckHSP = (props: any): JSX.Element => {
             {/* updatebutton */}
             <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
               <div style={{ width: "41.5%" }}></div>
+              {isLoader?<Spinner/>:
               <button
                 className={styles.FormBTN}
                 style={
@@ -342,6 +347,7 @@ const CheckHSP = (props: any): JSX.Element => {
               >
                 UPDATE
               </button>
+              }
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Icon, Label, TextField, Dropdown } from "@fluentui/react";
+import { Icon, Label, TextField, Dropdown, Spinner } from "@fluentui/react";
 import {
   PeoplePicker,
   PrincipalType,
@@ -44,6 +44,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState(false);
   const [charcode, setCharcode] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
 
   //division values
   const getDivisionChoice = async () => {
@@ -54,11 +55,11 @@ const SubmitHSQ = (props: any): JSX.Element => {
         let arrDropdown: any[] = [];
         //res.Choices.length > 0 &&
         res.forEach((data: any) => {
-          if(data.Title)
-          arrDropdown.push({
-            key: data.Title.trim(),
-            text: data.Title.trim(),
-          });
+          if (data.Title)
+            arrDropdown.push({
+              key: data.Title.trim(),
+              text: data.Title.trim(),
+            });
         });
         setDivisionChoice(arrDropdown);
       })
@@ -82,23 +83,33 @@ const SubmitHSQ = (props: any): JSX.Element => {
       Description: formdata.HeadShotQuestion ? formdata.HeadShotQuestion : "",
     };
     addData(currentJson);
+   
   };
   //adding data
   const addData = async (data) => {
+  setIsLoader(true)
     await SPServices.SPAddItem({
       Listname: "Headshot Questions",
-
       RequestJSON: data,
     })
       .then(async (res: any) => {
         console.log(res, "res");
+       
+       
 
         await SPServices.SPAddAttachments({
           ListName: "Headshot Questions",
           ListID: res.data.ID,
           Attachments: attachFiles,
         })
-          .then(() => alert("headshot questions submit successfully"))
+          .then((res:any) =>{ alert("headshot questions submit successfully")
+          setIsLoader(false)
+
+          props.homePage()
+        }
+         
+        
+          )
           .catch((error: any) => {
             getErrorFunction(error);
           });
@@ -342,6 +353,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
       {/* BTN section */}
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
+        {isLoader?<Spinner/>:
         <button
           disabled={!isSubmit}
           className={styles.FormBTN}
@@ -358,6 +370,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
         >
           SUBMIT
         </button>
+        }
       </div>
     </div>
   );
