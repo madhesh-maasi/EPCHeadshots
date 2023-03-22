@@ -57,6 +57,7 @@ interface IListHS {
   PressReleasePublishedDate: any;
   newJoinerPublishedDate: any;
   SubmitterEmailId:number;
+  SubmittedDate?:any;
 }
 
 interface IDropdown {
@@ -140,6 +141,7 @@ const SubmitHS = (props: any): JSX.Element => {
       SubmitterEmailId:newRecord.SubmitterEmail?newRecord.SubmitterEmail:null,
       DoYouNeedBioPublished: newRecord.CheckBox1,
       IsHeadshotForNewJoiner: newRecord.CheckBox2,
+      SubmittedDate:moment().format(),
       PressReleasePublishedDate: newRecord.CheckBox1
         ? newRecord.FirstBoxDate
         : null,
