@@ -16,7 +16,7 @@ const RetrieveHS = (props: any): JSX.Element =>
 
   const getDatas = async (UserID) => {
     await SPServices.SPReadItems({
-      Listname: "Headshot",
+      Listname: "Headshot Workspace",
       Filter: [
         {
           FilterKey: "UserName",

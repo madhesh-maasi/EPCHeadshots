@@ -4,7 +4,7 @@ import { sp } from "@pnp/sp/presets/all";
 import MainHeadShot from "./MainHeadShot";
 import "./../ExternalRef/styleSheets/Styles.css";
 
-let ListName: string = "Headshot";
+let ListName: string = "Headshot Workspace";
 let LibraryName: string = "Headshot Repository";
 
 export default class AnmHeadshot extends React.Component<

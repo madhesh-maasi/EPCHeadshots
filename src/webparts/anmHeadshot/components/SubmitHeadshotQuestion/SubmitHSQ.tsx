@@ -7,6 +7,7 @@ import {
 import SPServices from "../SPServices";
 import styles from "./SubmitHSQ.module.scss";
 import { useState, useEffect } from "react";
+import * as moment from "moment";
 
 interface ISubHeadShot {
   Name: number;
@@ -36,6 +37,8 @@ const SubmitHSQ = (props: any): JSX.Element => {
     ChargeCode: "",
     Subject: "",
     HeadShotQuestion: "",
+    SubmittedDate:null,
+   
 
     Attachments: undefined,
   };
@@ -81,35 +84,33 @@ const SubmitHSQ = (props: any): JSX.Element => {
       Title: formdata.Title ? formdata.Title : "",
       Subject: formdata.Subject ? formdata.Subject : "",
       Description: formdata.HeadShotQuestion ? formdata.HeadShotQuestion : "",
+      SubmittedDate: new Date().toISOString(),
     };
     addData(currentJson);
-   
   };
   //adding data
   const addData = async (data) => {
-  setIsLoader(true)
+    setIsLoader(true);
     await SPServices.SPAddItem({
       Listname: "Headshot Questions",
-      RequestJSON: data,
+      RequestJSON: data
     })
       .then(async (res: any) => {
         console.log(res, "res");
-       
-       
 
         await SPServices.SPAddAttachments({
           ListName: "Headshot Questions",
           ListID: res.data.ID,
           Attachments: attachFiles,
         })
-          .then((res:any) =>{ alert("headshot questions submit successfully")
-          setIsLoader(false)
+          .then((res: any) => {
+            alert(
+              "Your question has been received. Please allow up to 5 business days for a response."
+            );
+            setIsLoader(false);
 
-          props.homePage()
-        }
-         
-        
-          )
+            props.homePage();
+          })
           .catch((error: any) => {
             getErrorFunction(error);
           });
@@ -164,7 +165,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <div className={styles.FormInputSec}>
           <PeoplePicker
             context={props.context}
-            placeholder={`Insert people`}
+            placeholder={`A&M Email`}
             personSelectionLimit={1}
             showtooltip={true}
             ensureUser={true}
@@ -217,7 +218,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
         </Label>
         <div className={styles.FormInputSec}>
           <TextField
-            placeholder="Please enter Employee Id"
+            placeholder="Please enter Employee ID"
             onChange={(e: any) => {
               formdata.EmployeeId = e.target.value;
               setFormdata({ ...formdata });
@@ -261,8 +262,9 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <Label style={{ width: "18%" }}>TITLE:</Label>
         <div className={styles.FormInputSec}>
           <TextField
-            value="Not Defined"
-            readOnly={true}
+          placeholder="Not Defined"
+            value={formdata.Title}
+         
             onChange={(e: any) => {
               formdata.Title = e.target.value;
               setFormdata({ ...formdata });
@@ -353,24 +355,26 @@ const SubmitHSQ = (props: any): JSX.Element => {
       {/* BTN section */}
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
-        {isLoader?<Spinner/>:
-        <button
-          disabled={!isSubmit}
-          className={styles.FormBTN}
-          style={
-            false
-              ? { border: "none", background: "#f4f4f4", cursor: "auto" }
-              : {
-                  border: "1px solid #8a8886",
-                  background: "#fff",
-                  cursor: "pointer",
-                }
-          }
-          onClick={() => getFormData()}
-        >
-          SUBMIT
-        </button>
-        }
+        {isLoader ? (
+          <Spinner />
+        ) : (
+          <button
+            disabled={!isSubmit}
+            className={styles.FormBTN}
+            style={
+              false
+                ? { border: "none", background: "#f4f4f4", cursor: "auto" }
+                : {
+                    border: "1px solid #8a8886",
+                    background: "#fff",
+                    cursor: "pointer",
+                  }
+            }
+            onClick={() => getFormData()}
+          >
+            SUBMIT
+          </button>
+        )}
       </div>
     </div>
   );

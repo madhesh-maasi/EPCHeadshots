@@ -42,6 +42,7 @@ interface ISubHeadShot {
   FirstBoxDate: any;
   CheckBox2: boolean;
   SecondBoxDate: any;
+  SubmitterEmail:any
 }
 
 interface IListHS {
@@ -55,6 +56,7 @@ interface IListHS {
   IsHeadshotForNewJoiner: boolean;
   PressReleasePublishedDate: any;
   newJoinerPublishedDate: any;
+  SubmitterEmailId:number;
 }
 
 interface IDropdown {
@@ -81,16 +83,20 @@ const SubmitHS = (props: any): JSX.Element => {
     FirstBoxDate: null,
     CheckBox2: false,
     SecondBoxDate: null,
+    SubmitterEmail:null
+   
   };
   /* Local variable section end */
 
   /* State create section start */
   const [newRecord, setNewRecord] = useState<ISubHeadShot>(curObject);
   const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [isLoaders, setIsLoaders] = useState<boolean>(false);
+
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>(props.currentUser.Title);
-  const [isValidCharCode,setIsValidCharCode]=useState<boolean>(false);
+  const [isValidCharCode, setIsValidCharCode] = useState<boolean>(false);
   /* State create section end */
 
   /* function section start */
@@ -102,18 +108,18 @@ const SubmitHS = (props: any): JSX.Element => {
   /* get list choice data function */
   const getDivisionChoice = async () => {
     await SPServices.SPReadItems({
-      Listname: "HSDivisions"
+      Listname: "HSDivisions",
     })
       .then((res: any) => {
         let arrDropdown: any[] = [];
         //res.Choices.length > 0 &&
         res.forEach((data: any) => {
-          if(data.Title)
+          if (data.Title)
             arrDropdown.push({
               key: data.Title.trim(),
               text: data.Title.trim(),
             });
-          });
+        });
         setDivisionChoice(arrDropdown);
         setIsLoader(false);
       })
@@ -131,6 +137,7 @@ const SubmitHS = (props: any): JSX.Element => {
       EmployeeId: newRecord.EmployeeId ? newRecord.EmployeeId : "",
       ChargeCode: newRecord.ChargeCode ? newRecord.ChargeCode : "",
       AdditionalNotes: newRecord.AddNotes ? newRecord.AddNotes : "",
+      SubmitterEmailId:newRecord.SubmitterEmail?newRecord.SubmitterEmail:null,
       DoYouNeedBioPublished: newRecord.CheckBox1,
       IsHeadshotForNewJoiner: newRecord.CheckBox2,
       PressReleasePublishedDate: newRecord.CheckBox1
@@ -146,6 +153,7 @@ const SubmitHS = (props: any): JSX.Element => {
 
   /* list add datas function section */
   const getAddData = async (currentJSON: IListHS) => {
+    setIsLoaders(true);
     await SPServices.SPAddItem({
       Listname: props.ListName,
       RequestJSON: currentJSON,
@@ -173,6 +181,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 EmployeeId: currentJSON.EmployeeId,
                 ChargeCode: currentJSON.ChargeCode,
                 AdditionalNotes: currentJSON.AdditionalNotes,
+                SubmittedDate:new Date().toISOString(),
               })
               .then((val: any) => {
                 for (let i = 0; locFileArray.length > i; i++) {
@@ -193,11 +202,15 @@ const SubmitHS = (props: any): JSX.Element => {
                               EmployeeId: currentJSON.EmployeeId,
                               ChargeCode: currentJSON.ChargeCode,
                               AdditionalNotes: currentJSON.AdditionalNotes,
+                              SubmittedDate:new Date().toISOString(),
                             })
                             .then((val: any) => {
                               if (locFileArray.length == i + 1) {
                                 setIsSubmit(false);
-                                alert("Headshot details are updated successfully.")
+                                alert(
+                                  "Your submission has been received. Please allow up to 10 business days for a response."
+                                );
+                                setIsLoaders(false);
                                 props.homePage();
                               }
                             })
@@ -237,9 +250,6 @@ const SubmitHS = (props: any): JSX.Element => {
         Index: i,
       });
     }
-  
-    
-    
   };
   /* function section end */
 
@@ -249,7 +259,6 @@ const SubmitHS = (props: any): JSX.Element => {
     getDivisionChoice();
   }, []);
 
-
   function validateText(text) {
     const letterRegex = /[a-zA-Z]/g;
     const digitRegex = /[0-9]/g;
@@ -257,19 +266,22 @@ const SubmitHS = (props: any): JSX.Element => {
     const digits = text.match(digitRegex);
     return letters && digits && letters.length >= 3 && digits.length >= 3;
   }
-  
-  function onFormChange(data:ISubHeadShot)
-  {
-        var isAttachEmpty=arrAttachments.length;
-    
-        if(data.Division&&data.EmployeeId&&isValidCharCode&&data.Name&&data.ChargeCode&&(isAttachEmpty!==0))
-        {
-            setIsSubmit(true);
-        }
-        else
-        {
-          setIsSubmit(false);
-        }
+
+  function onFormChange(data: ISubHeadShot) {
+    var isAttachEmpty = arrAttachments.length;
+
+    if (
+      data.Division &&
+      data.EmployeeId &&
+      isValidCharCode &&
+      data.Name &&
+      data.ChargeCode &&
+      isAttachEmpty !== 0
+    ) {
+      setIsSubmit(true);
+    } else {
+      setIsSubmit(false);
+    }
   }
 
   return (
@@ -288,7 +300,7 @@ const SubmitHS = (props: any): JSX.Element => {
             <div className={styles.FormInputSec}>
               <PeoplePicker
                 context={props.context}
-                placeholder={`Insert people`}
+                placeholder={`A&M Email`}
                 personSelectionLimit={1}
                 showtooltip={true}
                 ensureUser={true}
@@ -341,7 +353,7 @@ const SubmitHS = (props: any): JSX.Element => {
             </Label>
             <div className={styles.FormInputSec}>
               <TextField
-                placeholder="Please enter Employee Id"
+                placeholder="Please enter Employee ID"
                 onChange={(e: any) => {
                   newRecord.EmployeeId = e.target.value;
                   setNewRecord({ ...newRecord });
@@ -390,14 +402,12 @@ const SubmitHS = (props: any): JSX.Element => {
             <Label style={{ width: "18%" }}>TITLE:</Label>
             <div className={styles.FormInputSec}>
               <TextField
-                //placeholder="Not Defined"
-                value="Not Defined"
-                readOnly={true}
+                placeholder="Not Defined"
+                value={newRecord.Title}
                 onChange={(e: any) => {
                   newRecord.Title = e.target.value;
                   setNewRecord({ ...newRecord });
                   onFormChange(newRecord);
-                  
                 }}
               />
             </div>
@@ -412,20 +422,16 @@ const SubmitHS = (props: any): JSX.Element => {
               <TextField
                 placeholder="A1B2C3"
                 maxLength={6}
-                onBlur={(e: any)=>{
-                  let result=validateText(e.target.value);
-                  if(!result)
-                  {
-                    alert('Charge Code should be 6 digit alpha numeric value.');
+                onBlur={(e: any) => {
+                  let result = validateText(e.target.value);
+                  if (!result) {
+                    alert("Charge Code should be 6 digit alpha numeric value.");
                     setIsValidCharCode(false);
-                  }
-                  else
-                  {
+                  } else {
                     setIsValidCharCode(true);
                   }
                 }}
-                onChange={(e: any) => 
-                  {
+                onChange={(e: any) => {
                   newRecord.ChargeCode = e.target.value;
                   setNewRecord({ ...newRecord });
                   onFormChange(newRecord);
@@ -444,6 +450,62 @@ const SubmitHS = (props: any): JSX.Element => {
             </Label>
           </div>
 
+          {/* SubmittedUser */}
+
+
+          <div className={styles.FormSec}>
+            <Label style={{ width: "18%" }}>
+            SUBMITTER A&M EMAIL:
+            </Label>
+            <div className={styles.FormInputSec}>
+              <PeoplePicker
+                context={props.context}
+                placeholder={`A&M Email`}
+                personSelectionLimit={1}
+                showtooltip={true}
+                ensureUser={true}
+                showHiddenInUI={false}
+                principalTypes={[PrincipalType.User]}
+                resolveDelay={1000}
+                onChange={(e) => {
+                  userMail = [];
+                  newRecord.SubmitterEmail = e.map((data: any) => {
+                    return data.id;
+                  })[0];
+                  // userMail = e.map((data: any) => {
+                  //   let arrUserName: string[] = data.text.split(" ");
+                  //   let arrSplitName: string[] = [];
+                  //   let arrUserNameLength: number = arrUserName.length - 1;
+                  //   arrUserName.forEach((val: string, index: number) => {
+                  //     if (index <= arrUserNameLength) {
+                  //       if (!curUserName) {
+                  //         arrSplitName = val.split(",");
+                  //         curUserName = arrSplitName[0];
+                  //       } else {
+                  //         arrSplitName = val.split(",");
+                  //         curUserName = curUserName + "_" + arrSplitName[0];
+                  //       }
+                  //     }
+                  //   });
+                  //   return data.secondaryText;
+                  // });
+                  setNewRecord({ ...newRecord });
+                }}
+                // defaultSelectedUsers={
+                //   userMail.length > 0 ? userMail : props.currentUser.Email
+                // }
+                required={true}
+              />
+            </div>
+            <div className={styles.tooltipSection}>
+              <Icon iconName="InfoSolid" className={styles.FormIconSec} />
+              <div className={styles.tooltipBody}>
+                Must type at least 3 characters of the users last name before a
+                name selection will appear to choose from
+              </div>
+            </div>
+          </div>
+
           {/* ADDITIONAL NOTES section */}
           <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
             <Label style={{ width: "18%" }}>ADDITIONAL NOTES:</Label>
@@ -454,7 +516,6 @@ const SubmitHS = (props: any): JSX.Element => {
                 onChange={(e: any) => {
                   newRecord.AddNotes = e.target.value;
                   setNewRecord({ ...newRecord });
-                  
                 }}
               />
             </div>
@@ -469,8 +530,10 @@ const SubmitHS = (props: any): JSX.Element => {
               <input
                 type="file"
                 multiple={true}
-                onChange={(e: any) => {getFiles(e);
-                  onFormChange(newRecord);} }
+                onChange={(e: any) => {
+                  getFiles(e);
+                  onFormChange(newRecord);
+                }}
               />
               {/* <TextField placeholder="Please enter text here" multiline={true} /> */}
             </div>
@@ -550,26 +613,29 @@ const SubmitHS = (props: any): JSX.Element => {
           {/* BTN section */}
           <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
             <div style={{ width: "18%" }}></div>
-            <button
-              disabled={!isSubmit}
-              className={styles.FormBTN}
-              style={
-                false
-                  ? { border: "none", background: "#f4f4f4", cursor: "auto" }
-                  : {
-                      border: "1px solid #8a8886",
-                      background: "#fff",
-                      cursor: "pointer",
-                    }
-              }
-              onClick={() => {
-                setIsSubmit(false),
-                getCurrentObject();
-              }}
-            >
-              {/* {isSubmit ? "SUBMIT" : "SUBMIT"} */}
-              SUBMIT
-            </button>
+            {isLoaders ? (
+              <Spinner />
+            ) : (
+              <button
+                disabled={!isSubmit}
+                className={styles.FormBTN}
+                style={
+                  false
+                    ? { border: "none", background: "#f4f4f4", cursor: "auto" }
+                    : {
+                        border: "1px solid #8a8886",
+                        background: "#fff",
+                        cursor: "pointer",
+                      }
+                }
+                onClick={() => {
+                  setIsSubmit(false), getCurrentObject();
+                }}
+              >
+                {/* {isSubmit ? "SUBMIT" : "SUBMIT"} */}
+                SUBMIT
+              </button>
+            )}
           </div>
         </div>
       )}

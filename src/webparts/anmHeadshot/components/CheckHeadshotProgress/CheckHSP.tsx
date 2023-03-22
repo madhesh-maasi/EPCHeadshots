@@ -16,6 +16,7 @@ import {
 import styles from "./CheckHSP.module.scss";
 import { useState, useEffect } from "react";
 import SPServices from "../SPServices";
+import * as moment from "moment";
 // import { Dropdown } from "office-ui-fabric-react";
 interface IDropdown {
   key: any;
@@ -59,6 +60,13 @@ const CheckHSP = (props: any): JSX.Element => {
       key: "column3",
       name: "Headshot Editor",
       fieldName: "GoFishDigitalEditor",
+      minWidth: 250,
+      maxWidth: 250,
+    },
+    {
+      key: "column4",
+      name: "SubmittedOn",
+      fieldName: "Created",
       minWidth: 250,
       maxWidth: 250,
     },
@@ -123,7 +131,7 @@ const CheckHSP = (props: any): JSX.Element => {
   //getdata from headshot
   const getDatas = async (UserID) => {
     await SPServices.SPReadItems({
-      Listname: "Headshot",
+      Listname: "Headshot Workspace",
       Filter: [
         {
           FilterKey: "UserName",
@@ -135,17 +143,25 @@ const CheckHSP = (props: any): JSX.Element => {
       Expand: "UserName",
     })
       .then((res: any) => {
+        console.log('res',res);
+        
         getData = [];
         res.forEach((data) => {
           getData.push({
             Status: data.Status,
             UserName: data.UserNameId ? data.UserName.Title : "",
             ID: data.ID ? data.ID : "",
+            Created:data.Created?moment(data.Created).format('MM/DD/YYYY'):null,
+
+
+
             GoFishDigitalEditor: data.GoFishDigitalEditor
               ? data.GoFishDigitalEditor
               : "",
           });
         });
+        console.log(getData,'getdata');
+        
         setdata([...getData]);
       })
       .catch((error: any) => {
@@ -192,7 +208,7 @@ const CheckHSP = (props: any): JSX.Element => {
         <div className={styles.FormInputSec}>
           <PeoplePicker
             context={props.context}
-            placeholder={`Insert people`}
+            placeholder={`A&M Email.`}
             personSelectionLimit={1}
             showtooltip={true}
             ensureUser={true}
