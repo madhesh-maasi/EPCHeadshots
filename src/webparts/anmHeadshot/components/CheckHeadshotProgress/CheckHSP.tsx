@@ -46,28 +46,28 @@ const CheckHSP = (props: any): JSX.Element => {
       key: "column1",
       name: "UserName",
       fieldName: "UserName",
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 100,
+      maxWidth: 200,
     },
     {
       key: "column2",
       name: "Status",
       fieldName: "Status",
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 100,
+      maxWidth: 150,
     },
     {
       key: "column3",
       name: "Headshot Editor",
       fieldName: "GoFishDigitalEditor",
-      minWidth: 250,
+      minWidth: 150,
       maxWidth: 250,
     },
     {
       key: "column4",
       name: "SubmittedOn",
       fieldName: "Created",
-      minWidth: 250,
+      minWidth: 150,
       maxWidth: 250,
     },
 
@@ -75,8 +75,8 @@ const CheckHSP = (props: any): JSX.Element => {
       key: "column5",
       name: "Action",
       fieldName: "Action",
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 100,
+      maxWidth: 100,
       onRender: (item: any, index) => {
         let arrIndex = index;
         return (
@@ -107,7 +107,7 @@ const CheckHSP = (props: any): JSX.Element => {
 
   const getDivisionChoice = async () => {
     await SPServices.SPGetChoices({
-      Listname: "Headshot",
+      Listname: "Headshot Workspace",
       FieldName: "Status",
     })
       .then((res: any) => {
@@ -182,7 +182,7 @@ const CheckHSP = (props: any): JSX.Element => {
     setIsLoader(true);
 
     await SPServices.SPUpdateItem({
-      Listname: "Headshot",
+      Listname: "Headshot Workspace",
       ID: ppvalue.id,
       RequestJSON: res,
     })

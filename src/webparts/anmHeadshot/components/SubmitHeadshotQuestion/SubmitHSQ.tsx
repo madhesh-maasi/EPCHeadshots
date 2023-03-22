@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Icon, Label, TextField, Dropdown, Spinner } from "@fluentui/react";
+import { sp } from "@pnp/sp/presets/all";
 import {
   PeoplePicker,
   PrincipalType,
@@ -33,7 +34,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
     Name: props.currentUser.Id,
     EmployeeId: "",
     Division: "",
-    Title: "",
+    Title: props.currentUser.JobTitle,
     ChargeCode: "",
     Subject: "",
     HeadShotQuestion: "",
@@ -172,32 +173,53 @@ const SubmitHSQ = (props: any): JSX.Element => {
             showHiddenInUI={false}
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
-            onChange={(e) => {
+            onChange={(e:any) => {
+
               userMail = [];
+              if(e.length>0)
+              {
+                props.sp.profiles.getUserProfilePropertyFor(e[0].loginName, "SPS-JobTitle").then((user) => 
+                {
+                  formdata.Name = e.map((data: any) => {
+                    return data.id;
+                  })[0];
 
-              formdata.Name = e.map((data: any) => {
-                return data.id;
-              })[0];
+                  formdata.Title= user ? user : "Not Defined";
+    
+                  // userMail = e.map((data: any) => {
+                  //   let arrUserName: string[] = data.text.split(" ");
+                  //   let arrSplitName: string[] = [];
+                  //   let arrUserNameLength: number = arrUserName.length - 1;
+                  //   arrUserName.forEach((val: string, index: number) => {
+                  //     if (index <= arrUserNameLength) {
+                  //       if (!curUserName) {
+                  //         arrSplitName = val.split(",");
+                  //         curUserName = arrSplitName[0];
+                  //       } else {
+                  //         arrSplitName = val.split(",");
+                  //         curUserName = curUserName + "_" + arrSplitName[0];
+                  //       }
+                  //     }
+                  //   });
+                  //   return data.secondaryText;
+                  // });
+                  setFormdata({ ...formdata });
+                }).catch(function(error)
+                {
+                  console.log(error);
+                })
+              }
+              else
+              {
+                formdata.Name = e.map((data: any) => {
+                  return data.id;
+                })[0];
+                formdata.Title="";
+                setFormdata({ ...formdata });
+              }
 
-              // userMail = e.map((data: any) => {
-              //   let arrUserName: string[] = data.text.split(" ");
-              //   let arrSplitName: string[] = [];
-              //   let arrUserNameLength: number = arrUserName.length - 1;
-              //   arrUserName.forEach((val: string, index: number) => {
-              //     if (index <= arrUserNameLength) {
-              //       if (!curUserName) {
-              //         arrSplitName = val.split(",");
-              //         curUserName = arrSplitName[0];
-              //       } else {
-              //         arrSplitName = val.split(",");
-              //         curUserName = curUserName + "_" + arrSplitName[0];
-              //       }
-              //     }
-              //   });
-              //   return data.secondaryText;
-              // });
-              setFormdata({ ...formdata });
-            }}
+            }
+            }
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
