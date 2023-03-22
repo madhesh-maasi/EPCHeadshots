@@ -1,4 +1,5 @@
 import * as React from "react";
+import { sp } from "@pnp/sp/presets/all";
 import {
   Icon,
   Label,
@@ -42,7 +43,7 @@ interface ISubHeadShot {
   FirstBoxDate: any;
   CheckBox2: boolean;
   SecondBoxDate: any;
-  SubmitterEmail:any
+  SubmitterEmail: any;
 }
 
 interface IListHS {
@@ -56,8 +57,8 @@ interface IListHS {
   IsHeadshotForNewJoiner: boolean;
   PressReleasePublishedDate: any;
   newJoinerPublishedDate: any;
-  SubmitterEmailId:number;
-  SubmittedDate?:any;
+  SubmitterEmailId: number;
+  SubmittedDate?: any;
 }
 
 interface IDropdown {
@@ -76,7 +77,7 @@ const SubmitHS = (props: any): JSX.Element => {
     Name: props.currentUser.Id,
     EmployeeId: "",
     Division: "",
-    Title: "",
+    Title: props.currentUser.JobTitle,
     ChargeCode: "",
     AddNotes: "",
     Attachments: undefined,
@@ -84,8 +85,7 @@ const SubmitHS = (props: any): JSX.Element => {
     FirstBoxDate: null,
     CheckBox2: false,
     SecondBoxDate: null,
-    SubmitterEmail:null
-   
+    SubmitterEmail: null,
   };
   /* Local variable section end */
 
@@ -138,10 +138,12 @@ const SubmitHS = (props: any): JSX.Element => {
       EmployeeId: newRecord.EmployeeId ? newRecord.EmployeeId : "",
       ChargeCode: newRecord.ChargeCode ? newRecord.ChargeCode : "",
       AdditionalNotes: newRecord.AddNotes ? newRecord.AddNotes : "",
-      SubmitterEmailId:newRecord.SubmitterEmail?newRecord.SubmitterEmail:null,
+      SubmitterEmailId: newRecord.SubmitterEmail
+        ? newRecord.SubmitterEmail
+        : null,
       DoYouNeedBioPublished: newRecord.CheckBox1,
       IsHeadshotForNewJoiner: newRecord.CheckBox2,
-      SubmittedDate:moment().format(),
+      SubmittedDate: moment().format(),
       PressReleasePublishedDate: newRecord.CheckBox1
         ? newRecord.FirstBoxDate
         : null,
@@ -183,7 +185,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 EmployeeId: currentJSON.EmployeeId,
                 ChargeCode: currentJSON.ChargeCode,
                 AdditionalNotes: currentJSON.AdditionalNotes,
-                SubmittedDate:new Date().toISOString(),
+                SubmittedDate: new Date().toISOString(),
               })
               .then((val: any) => {
                 for (let i = 0; locFileArray.length > i; i++) {
@@ -204,7 +206,7 @@ const SubmitHS = (props: any): JSX.Element => {
                               EmployeeId: currentJSON.EmployeeId,
                               ChargeCode: currentJSON.ChargeCode,
                               AdditionalNotes: currentJSON.AdditionalNotes,
-                              SubmittedDate:new Date().toISOString(),
+                              SubmittedDate: new Date().toISOString(),
                             })
                             .then((val: any) => {
                               if (locFileArray.length == i + 1) {
@@ -309,29 +311,66 @@ const SubmitHS = (props: any): JSX.Element => {
                 showHiddenInUI={false}
                 principalTypes={[PrincipalType.User]}
                 resolveDelay={1000}
-                onChange={(e) => {
-                  userMail = [];
-                  newRecord.Name = e.map((data: any) => {
-                    return data.id;
-                  })[0];
-                  userMail = e.map((data: any) => {
-                    let arrUserName: string[] = data.text.split(" ");
-                    let arrSplitName: string[] = [];
-                    let arrUserNameLength: number = arrUserName.length - 1;
-                    arrUserName.forEach((val: string, index: number) => {
-                      if (index <= arrUserNameLength) {
-                        if (!curUserName) {
-                          arrSplitName = val.split(",");
-                          curUserName = arrSplitName[0];
-                        } else {
-                          arrSplitName = val.split(",");
-                          curUserName = curUserName + "_" + arrSplitName[0];
+                onChange={(e: any) => {
+                  if (e.length > 0) {
+                    sp.profiles
+                      .getUserProfilePropertyFor(e[0].loginName, "SPS-JobTitle")
+                      .then((user) => {
+                        console.log(user);
+                        userMail = [];
+                        newRecord.Title = user ? user : "Not Defined";
+                        newRecord.Name = e.map((data: any) => {
+                          return data.id;
+                        })[0];
+                        userMail = e.map((data: any) => {
+                          let arrUserName: string[] = data.text.split(" ");
+                          let arrSplitName: string[] = [];
+                          let arrUserNameLength: number =
+                            arrUserName.length - 1;
+                          arrUserName.forEach((val: string, index: number) => {
+                            if (index <= arrUserNameLength) {
+                              if (!curUserName) {
+                                arrSplitName = val.split(",");
+                                curUserName = arrSplitName[0];
+                              } else {
+                                arrSplitName = val.split(",");
+                                curUserName =
+                                  curUserName + "_" + arrSplitName[0];
+                              }
+                            }
+                          });
+                          return data.secondaryText;
+                        });
+                        setNewRecord({ ...newRecord });
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  } else {
+                    userMail = [];
+                    newRecord.Title = "";
+                    newRecord.Name = e.map((data: any) => {
+                      return data.id;
+                    })[0];
+                    userMail = e.map((data: any) => {
+                      let arrUserName: string[] = data.text.split(" ");
+                      let arrSplitName: string[] = [];
+                      let arrUserNameLength: number = arrUserName.length - 1;
+                      arrUserName.forEach((val: string, index: number) => {
+                        if (index <= arrUserNameLength) {
+                          if (!curUserName) {
+                            arrSplitName = val.split(",");
+                            curUserName = arrSplitName[0];
+                          } else {
+                            arrSplitName = val.split(",");
+                            curUserName = curUserName + "_" + arrSplitName[0];
+                          }
                         }
-                      }
+                      });
+                      return data.secondaryText;
                     });
-                    return data.secondaryText;
-                  });
-                  setNewRecord({ ...newRecord });
+                    setNewRecord({ ...newRecord });
+                  }
                 }}
                 defaultSelectedUsers={
                   userMail.length > 0 ? userMail : props.currentUser.Email
@@ -454,11 +493,8 @@ const SubmitHS = (props: any): JSX.Element => {
 
           {/* SubmittedUser */}
 
-
           <div className={styles.FormSec}>
-            <Label style={{ width: "18%" }}>
-            SUBMITTER A&M EMAIL:
-            </Label>
+            <Label style={{ width: "18%" }}>SUBMITTER A&M EMAIL:</Label>
             <div className={styles.FormInputSec}>
               <PeoplePicker
                 context={props.context}
