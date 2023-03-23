@@ -31,6 +31,8 @@ interface INavigate {
   RetrieveHS: boolean;
   SubmitHSQ: boolean;
   RAG: boolean;
+  ER:boolean;
+  HQ:boolean;
 }
 
 interface ICurUser {
@@ -49,6 +51,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
     RetrieveHS: false,
     SubmitHSQ: false,
     RAG: false,
+    ER:false,
+    HQ:false
   };
 
   let currentUserDetails: ICurUser = {
@@ -80,6 +84,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
       RetrieveHS: false,
       SubmitHSQ: false,
       RAG: false,
+      ER:false,
+      HQ:false
     });
   };
 
@@ -163,11 +169,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
           justifyContent: "center",
         }}
       >
-        <div
-          style={{
-            width: "85%",
-          }}
-        >
+        <div>
           {/* Label section start */}
           <div
             style={{
@@ -206,6 +208,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -214,6 +219,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 }
               }}
@@ -256,6 +264,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -264,6 +275,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 }
               }}
@@ -306,6 +320,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: true,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -314,6 +331,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 }
               }}
@@ -356,6 +376,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: true,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -364,6 +387,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 }
               }}
@@ -409,6 +435,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: true,
+                    ER:false,
+                    HQ:false
+
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -417,6 +446,9 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
+                    ER:false,
+                    HQ:false
+
                   });
                 }
               }}
@@ -442,6 +474,124 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                 </Label>
               </div>
             </div>
+
+            {/* Editor Repository link */}
+            <div
+              className={styles.cardSec}
+              style={
+                isOverAllNavigate.ER
+                  ? { background: "#ffff" }
+                  : { background: "#002649" }
+              }
+              onClick={() => {
+                if (!isOverAllNavigate.ER) {
+                  window.open(
+                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/Forms/AllItems.aspx"
+                  );
+                  setIsOverAllNavigate({
+                    SubmitHS: false,
+                    CheckHSP: false,
+                    RetrieveHS: false,
+                    SubmitHSQ: false,
+                    RAG: false,
+                    ER:true,
+                    HQ:false
+
+                  });
+                } else {
+                  setIsOverAllNavigate({
+                    SubmitHS: false,
+                    CheckHSP: false,
+                    RetrieveHS: false,
+                    SubmitHSQ: false,
+                    RAG: false,
+                    ER:false,
+                    HQ:false
+
+                  });
+                }
+              }}
+            >
+              <div>
+                <Icon
+                  iconName="EntitlementRedemption"
+                  className={styles.cardIconSec}
+                  style={
+                    isOverAllNavigate.ER
+                      ? { color: "#000" }
+                      : { color: "#ffff" }
+                  }
+                />
+                <Label
+                  style={
+                    isOverAllNavigate.ER
+                      ? { color: "#000" }
+                      : { color: "#ffff" }
+                  }
+                >
+                 Editor Repository
+                </Label>
+              </div>
+            </div>
+            {/* Headshot questions */}
+            <div
+              className={styles.cardSec}
+              style={
+                isOverAllNavigate.HQ
+                  ? { background: "#ffff" }
+                  : { background: "#002649" }
+              }
+              onClick={() => {
+                if (!isOverAllNavigate.HQ) {
+                  window.open(
+                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/Lists/Questions/AllItems.aspx"
+                  );
+                  setIsOverAllNavigate({
+                    SubmitHS: false,
+                    CheckHSP: false,
+                    RetrieveHS: false,
+                    SubmitHSQ: false,
+                    RAG: false,
+                    ER:false,
+                    HQ:true
+
+                  });
+                } else {
+                  setIsOverAllNavigate({
+                    SubmitHS: false,
+                    CheckHSP: false,
+                    RetrieveHS: false,
+                    SubmitHSQ: false,
+                    RAG: false,
+                    ER:false,
+                    HQ:false
+
+                  });
+                }
+              }}
+            >
+              <div>
+                <Icon
+                  iconName="EntitlementRedemption"
+                  className={styles.cardIconSec}
+                  style={
+                    isOverAllNavigate.HQ
+                      ? { color: "#000" }
+                      : { color: "#ffff" }
+                  }
+                />
+                <Label
+                  style={
+                    isOverAllNavigate.HQ
+                      ? { color: "#000" }
+                      : { color: "#ffff" }
+                  }
+                >
+                Headshot questions
+                </Label>
+              </div>
+            </div>
+
           </div>
           {/* Card section end */}
 

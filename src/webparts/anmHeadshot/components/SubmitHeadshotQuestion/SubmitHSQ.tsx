@@ -224,7 +224,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
             required={true}
           />
         </div>
-        <div className={styles.tooltipSection}>
+        <div className={styles.tooltipSection} style={{display:"none"}}>
           <Icon iconName="InfoSolid" className={styles.FormIconSec} />
           <div className={styles.tooltipBody}>
             Must type at least 3 characters of the users last name before a name

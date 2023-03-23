@@ -65,7 +65,7 @@ const CheckHSP = (props: any): JSX.Element => {
     },
     {
       key: "column4",
-      name: "SubmittedOn",
+      name: "Submitted On",
       fieldName: "Created",
       minWidth: 150,
       maxWidth: 250,
@@ -227,7 +227,7 @@ const CheckHSP = (props: any): JSX.Element => {
             required={true}
           />
         </div>
-        <div className={styles.tooltipSection}>
+        <div className={styles.tooltipSection} style={{display:'none'}}>
           <Icon iconName="InfoSolid" className={styles.FormIconSec} />
           <div className={styles.tooltipBody}>
             Must type at least 3 characters of the users last name before a name

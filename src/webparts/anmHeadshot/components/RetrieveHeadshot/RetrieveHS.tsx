@@ -75,7 +75,7 @@ const RetrieveHS = (props: any): JSX.Element =>
         <div className={styles.FormInputSec}>
           <PeoplePicker
             context={props.context}
-            placeholder={`Insert people`}
+            placeholder={`A&M Email`}
             personSelectionLimit={1}
             showtooltip={true}
             ensureUser={true}
@@ -98,7 +98,7 @@ const RetrieveHS = (props: any): JSX.Element =>
             required={true}
           />
         </div>
-        <div className={styles.tooltipSection}>
+        <div className={styles.tooltipSection} style={{display:"none"}}>
           <Icon iconName="InfoSolid" className={styles.FormIconSec} />
           <div className={styles.tooltipBody}>
             Must type at least 3 characters of the users last name before a name

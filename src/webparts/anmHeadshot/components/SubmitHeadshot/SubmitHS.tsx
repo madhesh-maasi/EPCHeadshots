@@ -49,7 +49,8 @@ interface ISubHeadShot {
 interface IListHS {
   Title: string;
   UserNameId: number;
-  Status: string;
+  // Status: string;
+  Division: string;
   EmployeeId: string | number;
   ChargeCode: string | number;
   AdditionalNotes: string;
@@ -86,6 +87,7 @@ const SubmitHS = (props: any): JSX.Element => {
     CheckBox2: false,
     SecondBoxDate: null,
     SubmitterEmail: null,
+   
   };
   /* Local variable section end */
 
@@ -134,7 +136,7 @@ const SubmitHS = (props: any): JSX.Element => {
     let currentJSON: IListHS = {
       Title: newRecord.Title ? newRecord.Title : "",
       UserNameId: newRecord.Name ? newRecord.Name : null,
-      Status: newRecord.Division ? newRecord.Division : "",
+      Division: newRecord.Division ? newRecord.Division : "",
       EmployeeId: newRecord.EmployeeId ? newRecord.EmployeeId : "",
       ChargeCode: newRecord.ChargeCode ? newRecord.ChargeCode : "",
       AdditionalNotes: newRecord.AddNotes ? newRecord.AddNotes : "",
@@ -181,7 +183,7 @@ const SubmitHS = (props: any): JSX.Element => {
           .then(async (item: any) => {
             await item
               .update({
-                Status: currentJSON.Status,
+                Division:  currentJSON. Division,
                 EmployeeId: currentJSON.EmployeeId,
                 ChargeCode: currentJSON.ChargeCode,
                 AdditionalNotes: currentJSON.AdditionalNotes,
@@ -202,7 +204,7 @@ const SubmitHS = (props: any): JSX.Element => {
                         .then(async (item: any) => {
                           await item
                             .update({
-                              Status: currentJSON.Status,
+                              Division:  currentJSON. Division,
                               EmployeeId: currentJSON.EmployeeId,
                               ChargeCode: currentJSON.ChargeCode,
                               AdditionalNotes: currentJSON.AdditionalNotes,
@@ -378,7 +380,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 required={true}
               />
             </div>
-            <div className={styles.tooltipSection}>
+            <div className={styles.tooltipSection} style={{display:"none"}}>
               <Icon iconName="InfoSolid" className={styles.FormIconSec} />
               <div className={styles.tooltipBody}>
                 Must type at least 3 characters of the users last name before a
@@ -535,7 +537,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 required={true}
               />
             </div>
-            <div className={styles.tooltipSection}>
+            <div className={styles.tooltipSection} style={{display:"none"}} >
               <Icon iconName="InfoSolid" className={styles.FormIconSec} />
               <div className={styles.tooltipBody}>
                 Must type at least 3 characters of the users last name before a
