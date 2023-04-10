@@ -87,7 +87,6 @@ const SubmitHS = (props: any): JSX.Element => {
     CheckBox2: false,
     SecondBoxDate: null,
     SubmitterEmail: null,
-   
   };
   /* Local variable section end */
 
@@ -183,7 +182,7 @@ const SubmitHS = (props: any): JSX.Element => {
           .then(async (item: any) => {
             await item
               .update({
-                Division:  currentJSON. Division,
+                Division: currentJSON.Division,
                 EmployeeId: currentJSON.EmployeeId,
                 ChargeCode: currentJSON.ChargeCode,
                 AdditionalNotes: currentJSON.AdditionalNotes,
@@ -204,7 +203,7 @@ const SubmitHS = (props: any): JSX.Element => {
                         .then(async (item: any) => {
                           await item
                             .update({
-                              Division:  currentJSON. Division,
+                              Division: currentJSON.Division,
                               EmployeeId: currentJSON.EmployeeId,
                               ChargeCode: currentJSON.ChargeCode,
                               AdditionalNotes: currentJSON.AdditionalNotes,
@@ -380,7 +379,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 required={true}
               />
             </div>
-            <div className={styles.tooltipSection} style={{display:"none"}}>
+            <div className={styles.tooltipSection} style={{ display: "none" }}>
               <Icon iconName="InfoSolid" className={styles.FormIconSec} />
               <div className={styles.tooltipBody}>
                 Must type at least 3 characters of the users last name before a
@@ -412,6 +411,8 @@ const SubmitHS = (props: any): JSX.Element => {
             <Label className={styles.FormNaveLable}>
               To find your Employee ID, click
               <a
+                data-interception="off"
+                target="_blank"
                 href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
                 style={{ color: "#0d6efd", margin: "0px 5px" }}
               >
@@ -484,6 +485,8 @@ const SubmitHS = (props: any): JSX.Element => {
             <Label className={styles.FormNaveLable}>
               To find your Employee ID, click
               <a
+                data-interception="off"
+                target="_blank"
                 href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
                 style={{ color: "#0d6efd", margin: "0px 5px" }}
               >
@@ -537,7 +540,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 required={true}
               />
             </div>
-            <div className={styles.tooltipSection} style={{display:"none"}} >
+            <div className={styles.tooltipSection} style={{ display: "none" }}>
               <Icon iconName="InfoSolid" className={styles.FormIconSec} />
               <div className={styles.tooltipBody}>
                 Must type at least 3 characters of the users last name before a

@@ -542,7 +542,6 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     </Label>
                   </div>
                 </div>
-
                 {/* Headshot questions */}
                 <div
                   className={styles.cardSec}

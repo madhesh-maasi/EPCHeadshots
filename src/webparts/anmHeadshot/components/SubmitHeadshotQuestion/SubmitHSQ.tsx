@@ -38,8 +38,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
     ChargeCode: "",
     Subject: "",
     HeadShotQuestion: "",
-    SubmittedDate:null,
-   
+    SubmittedDate: null,
 
     Attachments: undefined,
   };
@@ -94,7 +93,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
     setIsLoader(true);
     await SPServices.SPAddItem({
       Listname: "Headshot Questions",
-      RequestJSON: data
+      RequestJSON: data,
     })
       .then(async (res: any) => {
         console.log(res, "res");
@@ -173,58 +172,53 @@ const SubmitHSQ = (props: any): JSX.Element => {
             showHiddenInUI={false}
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
-            onChange={(e:any) => {
-
+            onChange={(e: any) => {
               userMail = [];
-              if(e.length>0)
-              {
-                props.sp.profiles.getUserProfilePropertyFor(e[0].loginName, "SPS-JobTitle").then((user) => 
-                {
-                  formdata.Name = e.map((data: any) => {
-                    return data.id;
-                  })[0];
+              if (e.length > 0) {
+                props.sp.profiles
+                  .getUserProfilePropertyFor(e[0].loginName, "SPS-JobTitle")
+                  .then((user) => {
+                    formdata.Name = e.map((data: any) => {
+                      return data.id;
+                    })[0];
 
-                  formdata.Title= user ? user : "Not Defined";
-    
-                  // userMail = e.map((data: any) => {
-                  //   let arrUserName: string[] = data.text.split(" ");
-                  //   let arrSplitName: string[] = [];
-                  //   let arrUserNameLength: number = arrUserName.length - 1;
-                  //   arrUserName.forEach((val: string, index: number) => {
-                  //     if (index <= arrUserNameLength) {
-                  //       if (!curUserName) {
-                  //         arrSplitName = val.split(",");
-                  //         curUserName = arrSplitName[0];
-                  //       } else {
-                  //         arrSplitName = val.split(",");
-                  //         curUserName = curUserName + "_" + arrSplitName[0];
-                  //       }
-                  //     }
-                  //   });
-                  //   return data.secondaryText;
-                  // });
-                  setFormdata({ ...formdata });
-                }).catch(function(error)
-                {
-                  console.log(error);
-                })
-              }
-              else
-              {
+                    formdata.Title = user ? user : "Not Defined";
+
+                    // userMail = e.map((data: any) => {
+                    //   let arrUserName: string[] = data.text.split(" ");
+                    //   let arrSplitName: string[] = [];
+                    //   let arrUserNameLength: number = arrUserName.length - 1;
+                    //   arrUserName.forEach((val: string, index: number) => {
+                    //     if (index <= arrUserNameLength) {
+                    //       if (!curUserName) {
+                    //         arrSplitName = val.split(",");
+                    //         curUserName = arrSplitName[0];
+                    //       } else {
+                    //         arrSplitName = val.split(",");
+                    //         curUserName = curUserName + "_" + arrSplitName[0];
+                    //       }
+                    //     }
+                    //   });
+                    //   return data.secondaryText;
+                    // });
+                    setFormdata({ ...formdata });
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                  });
+              } else {
                 formdata.Name = e.map((data: any) => {
                   return data.id;
                 })[0];
-                formdata.Title="";
+                formdata.Title = "";
                 setFormdata({ ...formdata });
               }
-
-            }
-            }
+            }}
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
         </div>
-        <div className={styles.tooltipSection} style={{display:"none"}}>
+        <div className={styles.tooltipSection} style={{ display: "none" }}>
           <Icon iconName="InfoSolid" className={styles.FormIconSec} />
           <div className={styles.tooltipBody}>
             Must type at least 3 characters of the users last name before a name
@@ -251,6 +245,8 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <Label className={styles.FormNaveLable}>
           To find your Employee ID, click
           <a
+            data-interception="off"
+            target="_blank"
             href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
             style={{ color: "#0d6efd", margin: "0px 5px" }}
           >
@@ -284,9 +280,8 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <Label style={{ width: "18%" }}>TITLE:</Label>
         <div className={styles.FormInputSec}>
           <TextField
-          placeholder="Not Defined"
+            placeholder="Not Defined"
             value={formdata.Title}
-         
             onChange={(e: any) => {
               formdata.Title = e.target.value;
               setFormdata({ ...formdata });
@@ -322,6 +317,8 @@ const SubmitHSQ = (props: any): JSX.Element => {
         <Label className={styles.FormNaveLable}>
           To find your Employee ID, click
           <a
+            data-interception="off"
+            target="_blank"
             href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
             style={{ color: "#0d6efd", margin: "0px 5px" }}
           >
