@@ -43,6 +43,9 @@ interface ICurUser {
   JobTitle: string;
 }
 
+let Owners: any[] = [];
+let isOwners: boolean = false;
+
 const MainHeadShot = (props: IProp): JSX.Element => {
   /* Local variable section start */
   let isNavigate: INavigate = {
@@ -89,6 +92,21 @@ const MainHeadShot = (props: IProp): JSX.Element => {
     });
   };
 
+  // get group owners
+  const getGroupowners = async () => {
+    await props.sp.web.siteGroups
+      .getByName("Marketing Owners")
+      .users.get()
+      .then((users: any) => {
+        Owners = [];
+        users.length > 0 && users.forEach((user: any) => Owners.push(user.Id));
+        getCurrentUser();
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
+      });
+  };
+
   /* Current User function */
   const getCurrentUser = async () => {
     await props.sp.web.currentUser
@@ -118,6 +136,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
         //       JobTitle: "Not Defined",
         //     })
         //   : setCurrentUser({ ...currentUserDetails });
+        isOwners = Owners.some((e: number) => e == data.Id);
         sp.profiles
           .getUserProfilePropertyFor(data.LoginName, "SPS-JobTitle")
           .then((res) => {
@@ -158,7 +177,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
 
   /* useEffect Section */
   useEffect(() => {
-    getCurrentUser();
+    getGroupowners();
   }, []);
 
   return (
