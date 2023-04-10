@@ -31,8 +31,8 @@ interface INavigate {
   RetrieveHS: boolean;
   SubmitHSQ: boolean;
   RAG: boolean;
-  ER:boolean;
-  HQ:boolean;
+  ER: boolean;
+  HQ: boolean;
 }
 
 interface ICurUser {
@@ -43,6 +43,9 @@ interface ICurUser {
   JobTitle: string;
 }
 
+let Owners: any[] = [];
+let isOwners: boolean = false;
+
 const MainHeadShot = (props: IProp): JSX.Element => {
   /* Local variable section start */
   let isNavigate: INavigate = {
@@ -51,8 +54,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
     RetrieveHS: false,
     SubmitHSQ: false,
     RAG: false,
-    ER:false,
-    HQ:false
+    ER: false,
+    HQ: false,
   };
 
   let currentUserDetails: ICurUser = {
@@ -84,9 +87,24 @@ const MainHeadShot = (props: IProp): JSX.Element => {
       RetrieveHS: false,
       SubmitHSQ: false,
       RAG: false,
-      ER:false,
-      HQ:false
+      ER: false,
+      HQ: false,
     });
+  };
+
+  // get group owners
+  const getGroupowners = async () => {
+    await props.sp.web.siteGroups
+      .getByName("Marketing Owners")
+      .users.get()
+      .then((users: any) => {
+        Owners = [];
+        users.length > 0 && users.forEach((user: any) => Owners.push(user.Id));
+        getCurrentUser();
+      })
+      .catch((error: any) => {
+        getErrorFunction(error);
+      });
   };
 
   /* Current User function */
@@ -118,6 +136,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
         //       JobTitle: "Not Defined",
         //     })
         //   : setCurrentUser({ ...currentUserDetails });
+        isOwners = Owners.some((e: number) => e == data.Id);
         sp.profiles
           .getUserProfilePropertyFor(data.LoginName, "SPS-JobTitle")
           .then((res) => {
@@ -158,7 +177,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
 
   /* useEffect Section */
   useEffect(() => {
-    getCurrentUser();
+    getGroupowners();
   }, []);
 
   return (
@@ -208,9 +227,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -219,9 +237,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 }
               }}
@@ -264,9 +281,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -275,9 +291,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 }
               }}
@@ -320,9 +335,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: true,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -331,9 +345,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 }
               }}
@@ -376,9 +389,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: true,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -387,9 +399,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 }
               }}
@@ -435,9 +446,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: true,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 } else {
                   setIsOverAllNavigate({
@@ -446,9 +456,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     RetrieveHS: false,
                     SubmitHSQ: false,
                     RAG: false,
-                    ER:false,
-                    HQ:false
-
+                    ER: false,
+                    HQ: false,
                   });
                 }
               }}
@@ -475,123 +484,123 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               </div>
             </div>
 
-            {/* Editor Repository link */}
-            <div
-              className={styles.cardSec}
-              style={
-                isOverAllNavigate.ER
-                  ? { background: "#ffff" }
-                  : { background: "#002649" }
-              }
-              onClick={() => {
-                if (!isOverAllNavigate.ER) {
-                  window.open(
-                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/Forms/AllItems.aspx"
-                  );
-                  setIsOverAllNavigate({
-                    SubmitHS: false,
-                    CheckHSP: false,
-                    RetrieveHS: false,
-                    SubmitHSQ: false,
-                    RAG: false,
-                    ER:true,
-                    HQ:false
-
-                  });
-                } else {
-                  setIsOverAllNavigate({
-                    SubmitHS: false,
-                    CheckHSP: false,
-                    RetrieveHS: false,
-                    SubmitHSQ: false,
-                    RAG: false,
-                    ER:false,
-                    HQ:false
-
-                  });
-                }
-              }}
-            >
-              <div>
-                <Icon
-                  iconName="EntitlementRedemption"
-                  className={styles.cardIconSec}
+            {false && (
+              <>
+                {/* Editor Repository link */}
+                <div
+                  className={styles.cardSec}
                   style={
                     isOverAllNavigate.ER
-                      ? { color: "#000" }
-                      : { color: "#ffff" }
+                      ? { background: "#ffff" }
+                      : { background: "#002649" }
                   }
-                />
-                <Label
-                  style={
-                    isOverAllNavigate.ER
-                      ? { color: "#000" }
-                      : { color: "#ffff" }
-                  }
+                  onClick={() => {
+                    if (!isOverAllNavigate.ER) {
+                      window.open(
+                        "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/Forms/AllItems.aspx"
+                      );
+                      setIsOverAllNavigate({
+                        SubmitHS: false,
+                        CheckHSP: false,
+                        RetrieveHS: false,
+                        SubmitHSQ: false,
+                        RAG: false,
+                        ER: true,
+                        HQ: false,
+                      });
+                    } else {
+                      setIsOverAllNavigate({
+                        SubmitHS: false,
+                        CheckHSP: false,
+                        RetrieveHS: false,
+                        SubmitHSQ: false,
+                        RAG: false,
+                        ER: false,
+                        HQ: false,
+                      });
+                    }
+                  }}
                 >
-                 Editor Repository
-                </Label>
-              </div>
-            </div>
-            {/* Headshot questions */}
-            <div
-              className={styles.cardSec}
-              style={
-                isOverAllNavigate.HQ
-                  ? { background: "#ffff" }
-                  : { background: "#002649" }
-              }
-              onClick={() => {
-                if (!isOverAllNavigate.HQ) {
-                  window.open(
-                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/Lists/Questions/AllItems.aspx"
-                  );
-                  setIsOverAllNavigate({
-                    SubmitHS: false,
-                    CheckHSP: false,
-                    RetrieveHS: false,
-                    SubmitHSQ: false,
-                    RAG: false,
-                    ER:false,
-                    HQ:true
+                  <div>
+                    <Icon
+                      iconName="EntitlementRedemption"
+                      className={styles.cardIconSec}
+                      style={
+                        isOverAllNavigate.ER
+                          ? { color: "#000" }
+                          : { color: "#ffff" }
+                      }
+                    />
+                    <Label
+                      style={
+                        isOverAllNavigate.ER
+                          ? { color: "#000" }
+                          : { color: "#ffff" }
+                      }
+                    >
+                      Editor Repository
+                    </Label>
+                  </div>
+                </div>
 
-                  });
-                } else {
-                  setIsOverAllNavigate({
-                    SubmitHS: false,
-                    CheckHSP: false,
-                    RetrieveHS: false,
-                    SubmitHSQ: false,
-                    RAG: false,
-                    ER:false,
-                    HQ:false
-
-                  });
-                }
-              }}
-            >
-              <div>
-                <Icon
-                  iconName="EntitlementRedemption"
-                  className={styles.cardIconSec}
+                {/* Headshot questions */}
+                <div
+                  className={styles.cardSec}
                   style={
                     isOverAllNavigate.HQ
-                      ? { color: "#000" }
-                      : { color: "#ffff" }
+                      ? { background: "#ffff" }
+                      : { background: "#002649" }
                   }
-                />
-                <Label
-                  style={
-                    isOverAllNavigate.HQ
-                      ? { color: "#000" }
-                      : { color: "#ffff" }
-                  }
+                  onClick={() => {
+                    if (!isOverAllNavigate.HQ) {
+                      window.open(
+                        "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/Lists/Questions/AllItems.aspx"
+                      );
+                      setIsOverAllNavigate({
+                        SubmitHS: false,
+                        CheckHSP: false,
+                        RetrieveHS: false,
+                        SubmitHSQ: false,
+                        RAG: false,
+                        ER: false,
+                        HQ: true,
+                      });
+                    } else {
+                      setIsOverAllNavigate({
+                        SubmitHS: false,
+                        CheckHSP: false,
+                        RetrieveHS: false,
+                        SubmitHSQ: false,
+                        RAG: false,
+                        ER: false,
+                        HQ: false,
+                      });
+                    }
+                  }}
                 >
-                Headshot questions
-                </Label>
-              </div>
-            </div>
-
+                  <div>
+                    <Icon
+                      iconName="EntitlementRedemption"
+                      className={styles.cardIconSec}
+                      style={
+                        isOverAllNavigate.HQ
+                          ? { color: "#000" }
+                          : { color: "#ffff" }
+                      }
+                    />
+                    <Label
+                      style={
+                        isOverAllNavigate.HQ
+                          ? { color: "#000" }
+                          : { color: "#ffff" }
+                      }
+                    >
+                      Headshot questions
+                    </Label>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           {/* Card section end */}
 
