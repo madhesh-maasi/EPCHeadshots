@@ -467,9 +467,16 @@ const SubmitHS = (props: any): JSX.Element => {
                 placeholder="A1B2C3"
                 maxLength={6}
                 onBlur={(e: any) => {
-                  let result = validateText(e.target.value);
+                  // let result = validateText(e.target.value);
+                  // if (!result) {
+                  //   alert("Charge Code should be 6 digit alpha numeric value.");
+                  //   setIsValidCharCode(false);
+                  // } else {
+                  //   setIsValidCharCode(true);
+                  // }
+
+                  let result = e.target.value;
                   if (!result) {
-                    alert("Charge Code should be 6 digit alpha numeric value.");
                     setIsValidCharCode(false);
                   } else {
                     setIsValidCharCode(true);
@@ -499,7 +506,7 @@ const SubmitHS = (props: any): JSX.Element => {
           {/* SubmittedUser */}
 
           <div className={styles.FormSec}>
-            <Label style={{ width: "18%" }}>SUBMITTER A&M EMAIL:</Label>
+            <Label style={{ width: "18%" }}>SUBMITTER:</Label>
             <div className={styles.FormInputSec}>
               <PeoplePicker
                 context={props.context}
@@ -540,11 +547,13 @@ const SubmitHS = (props: any): JSX.Element => {
                 required={true}
               />
             </div>
-            <div className={styles.tooltipSection} style={{ display: "none" }}>
+            <div className={styles.tooltipSection} style={{ display: "block" }}>
               <Icon iconName="InfoSolid" className={styles.FormIconSec} />
               <div className={styles.tooltipBody}>
-                Must type at least 3 characters of the users last name before a
-                name selection will appear to choose from
+                {/* Must type at least 3 characters of the users last name before a
+                name selection will appear to choose from */}
+                If you’re submitting on someone else’s behalf and would like to
+                receive a confirmation email, input your email here.
               </div>
             </div>
           </div>
@@ -620,7 +629,7 @@ const SubmitHS = (props: any): JSX.Element => {
               {/* box two */}
               <div style={{ margin: "16px 0px", display: "flex" }}>
                 <Checkbox
-                  label="Check box if you need to hold on publishing your bio until a specific date"
+                  label="Check box if you need to hold off publishing your bio until a specific date"
                   onChange={(value: any, isCheck: boolean) => {
                     newRecord.CheckBox2 = isCheck;
                     setNewRecord({ ...newRecord });
