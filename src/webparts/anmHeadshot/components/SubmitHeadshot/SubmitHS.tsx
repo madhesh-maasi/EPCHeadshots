@@ -147,9 +147,13 @@ const SubmitHS = (props: any): JSX.Element => {
       SubmittedDate: moment().format(),
       PressReleasePublishedDate: newRecord.CheckBox1
         ? newRecord.FirstBoxDate
+          ? new Date(newRecord.FirstBoxDate)
+          : new Date()
         : null,
       newJoinerPublishedDate: newRecord.CheckBox2
         ? newRecord.SecondBoxDate
+          ? new Date(newRecord.SecondBoxDate)
+          : new Date()
         : null,
     };
     console.log(currentJSON);
