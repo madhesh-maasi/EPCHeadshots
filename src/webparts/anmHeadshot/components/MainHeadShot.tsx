@@ -45,12 +45,17 @@ interface ICurUser {
 
 let Owners: any[] = [];
 let isOwners: boolean = false;
+let naveCardName: string = "checkheadshot";
 
 const MainHeadShot = (props: IProp): JSX.Element => {
   /* Local variable section start */
+  let urlParams: any = new URLSearchParams(window.location.search);
+  let pageURLContion: string = urlParams.get("Disp");
+  let pageName: string = pageURLContion ? pageURLContion.toLowerCase() : "";
+
   let isNavigate: INavigate = {
     SubmitHS: false,
-    CheckHSP: false,
+    CheckHSP: pageName == naveCardName ? true : false,
     RetrieveHS: false,
     SubmitHSQ: false,
     RAG: false,
@@ -438,7 +443,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               onClick={() => {
                 if (!isOverAllNavigate.RAG) {
                   window.open(
-                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
                   );
                   setIsOverAllNavigate({
                     SubmitHS: false,
@@ -542,6 +547,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                     </Label>
                   </div>
                 </div>
+
                 {/* Headshot questions */}
                 <div
                   className={styles.cardSec}
@@ -615,6 +621,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                 homePage={getHomePage}
               />
             )}
+
             {isOverAllNavigate.CheckHSP && (
               <CheckHSP
                 sp={props.sp}
@@ -625,6 +632,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                 homePage={getHomePage}
               />
             )}
+
             {isOverAllNavigate.RetrieveHS && (
               <RetrieveHS
                 sp={props.sp}
@@ -635,6 +643,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
                 homePage={getHomePage}
               />
             )}
+
             {isOverAllNavigate.SubmitHSQ && (
               <SubmitHSQ
                 sp={props.sp}

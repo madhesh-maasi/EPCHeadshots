@@ -247,7 +247,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
           <a
             data-interception="off"
             target="_blank"
-            href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+            href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
             style={{ color: "#0d6efd", margin: "0px 5px" }}
           >
             here
@@ -319,7 +319,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
           <a
             data-interception="off"
             target="_blank"
-            href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+            href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
             style={{ color: "#0d6efd", margin: "0px 5px" }}
           >
             here

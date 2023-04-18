@@ -17,13 +17,13 @@ import styles from "./SubmitHS.module.scss";
 import * as moment from "moment";
 import SPServices from "../SPServices";
 import { useState, useEffect } from "react";
-// import { FilePond, File, registerPlugin } from "react-filepond";
 
-// // Import FilePond styles
+// import { FilePond, File, registerPlugin } from "react-filepond";
+// Import FilePond styles
 // import "filepond/dist/filepond.min.css";
-// // Import the Image EXIF Orientation and Image Preview plugins
-// // Note: These need to be installed separately
-// // `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
+// Import the Image EXIF Orientation and Image Preview plugins
+// Note: These need to be installed separately
+// `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
 // import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 // import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 // import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
@@ -94,7 +94,6 @@ const SubmitHS = (props: any): JSX.Element => {
   const [newRecord, setNewRecord] = useState<ISubHeadShot>(curObject);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isLoaders, setIsLoaders] = useState<boolean>(false);
-
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>(props.currentUser.Title);
@@ -156,7 +155,6 @@ const SubmitHS = (props: any): JSX.Element => {
           : new Date()
         : null,
     };
-    console.log(currentJSON);
     getAddData(currentJSON);
   };
 
@@ -186,11 +184,17 @@ const SubmitHS = (props: any): JSX.Element => {
           .then(async (item: any) => {
             await item
               .update({
+                Title: currentJSON.Title,
                 Division: currentJSON.Division,
                 EmployeeId: currentJSON.EmployeeId,
                 ChargeCode: currentJSON.ChargeCode,
                 AdditionalNotes: currentJSON.AdditionalNotes,
                 SubmittedDate: new Date().toISOString(),
+                DoYouNeedBioPublished: currentJSON.DoYouNeedBioPublished,
+                IsHeadshotForNewJoiner: currentJSON.IsHeadshotForNewJoiner,
+                PressReleasePublishedDate:
+                  currentJSON.PressReleasePublishedDate,
+                newJoinerPublishedDate: currentJSON.newJoinerPublishedDate,
               })
               .then((val: any) => {
                 for (let i = 0; locFileArray.length > i; i++) {
@@ -207,11 +211,20 @@ const SubmitHS = (props: any): JSX.Element => {
                         .then(async (item: any) => {
                           await item
                             .update({
+                              Title: currentJSON.Title,
                               Division: currentJSON.Division,
                               EmployeeId: currentJSON.EmployeeId,
                               ChargeCode: currentJSON.ChargeCode,
                               AdditionalNotes: currentJSON.AdditionalNotes,
                               SubmittedDate: new Date().toISOString(),
+                              DoYouNeedBioPublished:
+                                currentJSON.DoYouNeedBioPublished,
+                              IsHeadshotForNewJoiner:
+                                currentJSON.IsHeadshotForNewJoiner,
+                              PressReleasePublishedDate:
+                                currentJSON.PressReleasePublishedDate,
+                              newJoinerPublishedDate:
+                                currentJSON.newJoinerPublishedDate,
                             })
                             .then((val: any) => {
                               if (locFileArray.length == i + 1) {
@@ -417,7 +430,7 @@ const SubmitHS = (props: any): JSX.Element => {
               <a
                 data-interception="off"
                 target="_blank"
-                href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+                href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
                 style={{ color: "#0d6efd", margin: "0px 5px" }}
               >
                 here
@@ -498,7 +511,7 @@ const SubmitHS = (props: any): JSX.Element => {
               <a
                 data-interception="off"
                 target="_blank"
-                href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+                href="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
                 style={{ color: "#0d6efd", margin: "0px 5px" }}
               >
                 here
@@ -508,7 +521,6 @@ const SubmitHS = (props: any): JSX.Element => {
           </div>
 
           {/* SubmittedUser */}
-
           <div className={styles.FormSec}>
             <Label style={{ width: "18%" }}>SUBMITTER:</Label>
             <div className={styles.FormInputSec}>
