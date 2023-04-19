@@ -195,6 +195,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 PressReleasePublishedDate:
                   currentJSON.PressReleasePublishedDate,
                 newJoinerPublishedDate: currentJSON.newJoinerPublishedDate,
+                Status: "Received",
               })
               .then((val: any) => {
                 for (let i = 0; locFileArray.length > i; i++) {
@@ -225,6 +226,7 @@ const SubmitHS = (props: any): JSX.Element => {
                                 currentJSON.PressReleasePublishedDate,
                               newJoinerPublishedDate:
                                 currentJSON.newJoinerPublishedDate,
+                              Status: "Received",
                             })
                             .then((val: any) => {
                               if (locFileArray.length == i + 1) {
@@ -295,9 +297,9 @@ const SubmitHS = (props: any): JSX.Element => {
     if (
       data.Division &&
       data.EmployeeId &&
-      isValidCharCode &&
+      // isValidCharCode &&
       data.Name &&
-      data.ChargeCode &&
+      // data.ChargeCode &&
       isAttachEmpty !== 0
     ) {
       setIsSubmit(true);
@@ -477,7 +479,8 @@ const SubmitHS = (props: any): JSX.Element => {
           {/* CHARGE CODE section */}
           <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
             <Label style={{ width: "18%" }}>
-              CHARGE CODE:<span style={{ color: "red" }}> *</span>
+              CHARGE CODE:
+              {/* <span style={{ color: "red" }}> *</span> */}
             </Label>
             <div className={styles.FormInputSec}>
               <TextField
@@ -493,16 +496,16 @@ const SubmitHS = (props: any): JSX.Element => {
                   // }
 
                   let result = e.target.value;
-                  if (!result) {
-                    setIsValidCharCode(false);
-                  } else {
-                    setIsValidCharCode(true);
-                  }
+                  // if (!result) {
+                  //   setIsValidCharCode(false);
+                  // } else {
+                  //   setIsValidCharCode(true);
+                  // }
                 }}
                 onChange={(e: any) => {
                   newRecord.ChargeCode = e.target.value;
                   setNewRecord({ ...newRecord });
-                  onFormChange(newRecord);
+                  // onFormChange(newRecord);
                 }}
               />
             </div>
@@ -693,7 +696,7 @@ const SubmitHS = (props: any): JSX.Element => {
                     : {
                         border: "1px solid #8a8886",
                         background: "#fff",
-                        cursor: "pointer",
+                        cursor: !isSubmit ? "auto" : "pointer",
                       }
                 }
                 onClick={() => {

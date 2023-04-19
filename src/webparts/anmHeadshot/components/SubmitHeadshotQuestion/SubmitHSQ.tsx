@@ -124,11 +124,11 @@ const SubmitHSQ = (props: any): JSX.Element => {
     if (
       datas.Name &&
       datas.EmployeeId &&
-      datas.ChargeCode &&
+      // datas.ChargeCode &&
       datas.Subject &&
       datas.HeadShotQuestion &&
-      datas.Division &&
-      charcode
+      datas.Division
+      // charcode
     ) {
       setIsSubmit(true);
     } else {
@@ -293,24 +293,25 @@ const SubmitHSQ = (props: any): JSX.Element => {
       {/* CHARGE CODE section */}
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <Label style={{ width: "18%" }}>
-          CHARGE CODE:<span style={{ color: "red" }}> *</span>
+          CHARGE CODE:
+          {/* <span style={{ color: "red" }}> *</span> */}
         </Label>
         <div className={styles.FormInputSec}>
           <TextField
             placeholder="A1B2C3"
             onBlur={(e: any) => {
               let result = validateCharcode(e.target.value);
-              if (!result) {
-                alert("Charge Code should be 6 digit alpha numeric value.");
-                setCharcode(false);
-              } else {
-                setCharcode(true);
-              }
+              // if (!result) {
+              //   alert("Charge Code should be 6 digit alpha numeric value.");
+              //   setCharcode(false);
+              // } else {
+              //   setCharcode(true);
+              // }
             }}
             onChange={(e: any) => {
               formdata.ChargeCode = e.target.value;
               setFormdata({ ...formdata });
-              onDisableButton(formdata);
+              // onDisableButton(formdata);
             }}
           />
         </div>
@@ -386,7 +387,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
                 : {
                     border: "1px solid #8a8886",
                     background: "#fff",
-                    cursor: "pointer",
+                    cursor: !isSubmit ? "auto" : "pointer",
                   }
             }
             onClick={() => getFormData()}

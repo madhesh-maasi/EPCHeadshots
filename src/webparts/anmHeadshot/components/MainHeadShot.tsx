@@ -45,7 +45,10 @@ interface ICurUser {
 
 let Owners: any[] = [];
 let isOwners: boolean = false;
-let naveCardName: string = "checkheadshot";
+let _naveSH: string = "submitheadshot";
+let _naveCHP: string = "checkheadshot";
+let _naveRH: string = "retrieveheadshot";
+let _naveSHQ: string = "otherquestion";
 
 const MainHeadShot = (props: IProp): JSX.Element => {
   /* Local variable section start */
@@ -54,10 +57,10 @@ const MainHeadShot = (props: IProp): JSX.Element => {
   let pageName: string = pageURLContion ? pageURLContion.toLowerCase() : "";
 
   let isNavigate: INavigate = {
-    SubmitHS: false,
-    CheckHSP: pageName == naveCardName ? true : false,
-    RetrieveHS: false,
-    SubmitHSQ: false,
+    SubmitHS: pageName == _naveSH ? true : false,
+    CheckHSP: pageName == _naveCHP ? true : false,
+    RetrieveHS: pageName == _naveRH ? true : false,
+    SubmitHSQ: pageName == _naveSHQ ? true : false,
     RAG: false,
     ER: false,
     HQ: false,
@@ -443,7 +446,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               onClick={() => {
                 if (!isOverAllNavigate.RAG) {
                   window.open(
-                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Charge-Code-and-Employee-ID.aspx"
+                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
                   );
                   setIsOverAllNavigate({
                     SubmitHS: false,
