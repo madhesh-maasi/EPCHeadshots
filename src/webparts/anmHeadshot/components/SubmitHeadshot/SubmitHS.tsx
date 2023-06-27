@@ -71,14 +71,30 @@ let userMail: string[] = [];
 let curUserName: string = "";
 let arrAttachments: any[] = [];
 let locFileArray: any[] = [];
-
+// let curObject: ISubHeadShot = {
+//   Name: null,
+//   EmployeeId: "",
+//   Division: "",
+//   Title: "",
+//   ChargeCode: "",
+//   AddNotes: "",
+//   Attachments: undefined,
+//   CheckBox1: false,
+//   FirstBoxDate: null,
+//   CheckBox2: false,
+//   SecondBoxDate: null,
+//   SubmitterEmail: null,
+// };
 const SubmitHS = (props: any): JSX.Element => {
   /* Local variable section start */
+
   let curObject: ISubHeadShot = {
-    Name: props.currentUser.Id,
+    // Name: props.currentUser.Id,
+    Name: null,
     EmployeeId: "",
     Division: "",
-    Title: props.currentUser.JobTitle,
+    // Title: props.currentUser.JobTitle,
+    Title: "",
     ChargeCode: "",
     AddNotes: "",
     Attachments: undefined,
@@ -88,6 +104,7 @@ const SubmitHS = (props: any): JSX.Element => {
     SecondBoxDate: null,
     SubmitterEmail: null,
   };
+
   /* Local variable section end */
 
   /* State create section start */
@@ -96,7 +113,7 @@ const SubmitHS = (props: any): JSX.Element => {
   const [isLoaders, setIsLoaders] = useState<boolean>(false);
   const [divisionChoice, setDivisionChoice] = useState<IDropdown[]>();
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
-  const [folderName, setFolderName] = useState<string>(props.currentUser.Title);
+  const [folderName, setFolderName] = useState<string>("");
   const [isValidCharCode, setIsValidCharCode] = useState<boolean>(false);
   /* State create section end */
 
@@ -173,91 +190,104 @@ const SubmitHS = (props: any): JSX.Element => {
       });
   };
 
+  // function FolderIDGet() {
+  //   props.sp.web
+  //     .getFolderByServerRelativeUrl(
+  //       "sites/Marketing/HeadshotAttachments/Chilakala_Ramesh_9942"
+  //     ).expand().get()
+  //     .then((val: any) => {
+  //       debugger;
+  //       alert("Success");
+  //     })
+  //     .catch((error: any) => {
+  //       alert(error);
+  //     });
+  // }
+
   /* Library documents datas add function */
   const addLibraryData = async (currentJSON: IListHS) => {
+    debugger;
     await props.sp.web.lists
       .getByTitle(props.LibraryName)
       .rootFolder.folders.add(folderName)
       .then(async (res: any) => {
-        await res.folder
-          .getItem()
-          .then(async (item: any) => {
-            await item
-              .update({
-                Title: currentJSON.Title,
-                Division: currentJSON.Division,
-                EmployeeId: currentJSON.EmployeeId,
-                ChargeCode: currentJSON.ChargeCode,
-                AdditionalNotes: currentJSON.AdditionalNotes,
-                SubmittedDate: new Date().toISOString(),
-                DoYouNeedBioPublished: currentJSON.DoYouNeedBioPublished,
-                IsHeadshotForNewJoiner: currentJSON.IsHeadshotForNewJoiner,
-                PressReleasePublishedDate:
-                  currentJSON.PressReleasePublishedDate,
-                newJoinerPublishedDate: currentJSON.newJoinerPublishedDate,
-                Status: "Received",
-              })
-              .then((val: any) => {
-                for (let i = 0; locFileArray.length > i; i++) {
-                  props.sp.web
-                    .getFolderByServerRelativeUrl(res.data.ServerRelativeUrl)
-                    .files.add(
-                      locFileArray[i].name,
-                      locFileArray[i].content,
-                      true
-                    )
-                    .then(async (data: any) => {
-                      await data.file
-                        .getItem()
-                        .then(async (item: any) => {
-                          await item
-                            .update({
-                              Title: currentJSON.Title,
-                              Division: currentJSON.Division,
-                              EmployeeId: currentJSON.EmployeeId,
-                              ChargeCode: currentJSON.ChargeCode,
-                              AdditionalNotes: currentJSON.AdditionalNotes,
-                              SubmittedDate: new Date().toISOString(),
-                              DoYouNeedBioPublished:
-                                currentJSON.DoYouNeedBioPublished,
-                              IsHeadshotForNewJoiner:
-                                currentJSON.IsHeadshotForNewJoiner,
-                              PressReleasePublishedDate:
-                                currentJSON.PressReleasePublishedDate,
-                              newJoinerPublishedDate:
-                                currentJSON.newJoinerPublishedDate,
-                              Status: "Received",
-                            })
-                            .then((val: any) => {
-                              if (locFileArray.length == i + 1) {
-                                setIsSubmit(false);
-                                alert(
-                                  "Your submission has been received. Please allow up to 10 business days for a response."
-                                );
-                                setIsLoaders(false);
-                                props.homePage();
-                              }
-                            })
-                            .catch((error: any) => {
-                              getErrorFunction(error);
-                            });
-                        })
-                        .catch((error: any) => {
-                          getErrorFunction(error);
-                        });
+        for (let i = 0; locFileArray.length > i; i++) {
+          props.sp.web
+            .getFolderByServerRelativeUrl(res.data.ServerRelativeUrl)
+            .files.add(locFileArray[i].name, locFileArray[i].content, true)
+            .then(async (data: any) => {
+              await data.file
+                .getItem()
+                .then(async (item: any) => {
+                  await item
+                    .update({
+                      Title: currentJSON.Title,
+                      Division: currentJSON.Division,
+                      EmployeeId: currentJSON.EmployeeId,
+                      ChargeCode: currentJSON.ChargeCode,
+                      AdditionalNotes: currentJSON.AdditionalNotes,
+                      SubmittedDate: new Date().toISOString(),
+                      DoYouNeedBioPublished: currentJSON.DoYouNeedBioPublished,
+                      IsHeadshotForNewJoiner:
+                        currentJSON.IsHeadshotForNewJoiner,
+                      PressReleasePublishedDate:
+                        currentJSON.PressReleasePublishedDate,
+                      newJoinerPublishedDate:
+                        currentJSON.newJoinerPublishedDate,
+                      Status: "Received",
+                    })
+                    .then((val: any) => {
+                      if (locFileArray.length == i + 1) {
+                        setIsSubmit(false);
+                        alert(
+                          "Your submission has been received. Please allow up to 10 business days for a response."
+                        );
+                        setIsLoaders(false);
+                        props.homePage();
+                      }
+                      // setNewRecord(curObject);
+                      userMail = [];
                     })
                     .catch((error: any) => {
                       getErrorFunction(error);
                     });
-                }
-              })
-              .catch((error: any) => {
-                getErrorFunction(error);
-              });
-          })
-          .catch((error: any) => {
-            getErrorFunction(error);
-          });
+                })
+                .catch((error: any) => {
+                  getErrorFunction(error);
+                });
+            })
+            .catch((error: any) => {
+              getErrorFunction(error);
+            });
+        }
+        // await res.folder
+        //   .getItem()
+        //   .then(async (item: any) => {
+        //     await item
+        //       .update({
+        //         Title: currentJSON.Title,
+        //         Division: currentJSON.Division,
+        //         EmployeeId: currentJSON.EmployeeId,
+        //         ChargeCode: currentJSON.ChargeCode,
+        //         AdditionalNotes: currentJSON.AdditionalNotes,
+        //         SubmittedDate: new Date().toISOString(),
+        //         DoYouNeedBioPublished: currentJSON.DoYouNeedBioPublished,
+        //         IsHeadshotForNewJoiner: currentJSON.IsHeadshotForNewJoiner,
+        //         PressReleasePublishedDate:
+        //           currentJSON.PressReleasePublishedDate,
+        //         newJoinerPublishedDate: currentJSON.newJoinerPublishedDate,
+        //         Status: "Received",
+        //       })
+        //       .then((val: any) => {
+
+        //       })
+        //       .catch((error: any) => {
+        //         getErrorFunction(error);
+        //       });
+        //   })
+        //   .catch((error: any) => {
+        //     getErrorFunction(error);
+        //   });
       })
       .catch((error: any) => {
         getErrorFunction(error);
@@ -267,6 +297,7 @@ const SubmitHS = (props: any): JSX.Element => {
   /* get all files function section */
   const getFiles = (doc: any) => {
     arrAttachments = doc.target.files;
+    locFileArray = [];
     for (let i = 0; i < arrAttachments.length; i++) {
       locFileArray.push({
         name: arrAttachments[i].name,
@@ -281,6 +312,20 @@ const SubmitHS = (props: any): JSX.Element => {
   useEffect(() => {
     setIsLoader(true);
     getDivisionChoice();
+    // curObject = {
+    //   Name: props.currentUser.Id,
+    //   EmployeeId: "",
+    //   Division: "",
+    //   Title: props.currentUser.JobTitle,
+    //   ChargeCode: "",
+    //   AddNotes: "",
+    //   Attachments: undefined,
+    //   CheckBox1: false,
+    //   FirstBoxDate: null,
+    //   CheckBox2: false,
+    //   SecondBoxDate: null,
+    //   SubmitterEmail: null,
+    // };
   }, []);
 
   function validateText(text) {
@@ -292,15 +337,16 @@ const SubmitHS = (props: any): JSX.Element => {
   }
 
   function onFormChange(data: ISubHeadShot) {
-    var isAttachEmpty = arrAttachments.length;
+    var isAttachEmpty = arrAttachments.length > 0;
+    console.log("data", data);
 
     if (
+      data.Name &&
       data.Division &&
       data.EmployeeId &&
-      // isValidCharCode &&
       data.Name &&
-      // data.ChargeCode &&
-      isAttachEmpty !== 0
+      data.ChargeCode &&
+      isAttachEmpty
     ) {
       setIsSubmit(true);
     } else {
@@ -331,9 +377,9 @@ const SubmitHS = (props: any): JSX.Element => {
                 showHiddenInUI={false}
                 principalTypes={[PrincipalType.User]}
                 resolveDelay={1000}
-                onChange={(e: any) => {
+                onChange={async (e: any) => {
                   if (e.length > 0) {
-                    sp.profiles
+                    await sp.profiles
                       .getUserProfilePropertyFor(e[0].loginName, "SPS-JobTitle")
                       .then((user) => {
                         console.log(user);
@@ -347,6 +393,7 @@ const SubmitHS = (props: any): JSX.Element => {
                           let arrSplitName: string[] = [];
                           let arrUserNameLength: number =
                             arrUserName.length - 1;
+                          curUserName = "";
                           arrUserName.forEach((val: string, index: number) => {
                             if (index <= arrUserNameLength) {
                               if (!curUserName) {
@@ -362,6 +409,7 @@ const SubmitHS = (props: any): JSX.Element => {
                           return data.secondaryText;
                         });
                         setNewRecord({ ...newRecord });
+                        onFormChange({ ...newRecord });
                       })
                       .catch((error) => {
                         console.log(error);
@@ -372,28 +420,36 @@ const SubmitHS = (props: any): JSX.Element => {
                     newRecord.Name = e.map((data: any) => {
                       return data.id;
                     })[0];
-                    userMail = e.map((data: any) => {
-                      let arrUserName: string[] = data.text.split(" ");
-                      let arrSplitName: string[] = [];
-                      let arrUserNameLength: number = arrUserName.length - 1;
-                      arrUserName.forEach((val: string, index: number) => {
-                        if (index <= arrUserNameLength) {
-                          if (!curUserName) {
-                            arrSplitName = val.split(",");
-                            curUserName = arrSplitName[0];
-                          } else {
-                            arrSplitName = val.split(",");
-                            curUserName = curUserName + "_" + arrSplitName[0];
-                          }
-                        }
-                      });
-                      return data.secondaryText;
-                    });
+                    // userMail = e.map((data: any) => {
+                    //   let arrUserName: string[] = data.text.split(" ");
+                    //   let arrSplitName: string[] = [];
+                    //   let arrUserNameLength: number = arrUserName.length - 1;
+                    //   arrUserName.forEach((val: string, index: number) => {
+                    //     if (index <= arrUserNameLength) {
+                    //       if (!curUserName) {
+                    //         arrSplitName = val.split(",");
+                    //         curUserName = arrSplitName[0];
+                    //       } else {
+                    //         arrSplitName = val.split(",");
+                    //         curUserName = curUserName + "_" + arrSplitName[0];
+                    //       }
+                    //     }
+                    //   });
+                    //   return data.secondaryText;
+                    // });
                     setNewRecord({ ...newRecord });
+                    onFormChange({ ...newRecord });
+                    setFolderName(
+                      curUserName
+                        ? curUserName + "_" + newRecord.EmployeeId
+                        : // : props.currentUser.Title + "_" + newRecord.EmployeeId
+                          ""
+                    );
                   }
                 }}
                 defaultSelectedUsers={
-                  userMail.length > 0 ? userMail : props.currentUser.Email
+                  // userMail.length > 0 ? userMail : props.currentUser.Email
+                  userMail
                 }
                 required={true}
               />
@@ -415,14 +471,18 @@ const SubmitHS = (props: any): JSX.Element => {
             <div className={styles.FormInputSec}>
               <TextField
                 placeholder="Please enter Employee ID"
+                autoComplete="off"
                 onChange={(e: any) => {
                   newRecord.EmployeeId = e.target.value;
                   setNewRecord({ ...newRecord });
                   setFolderName(
                     curUserName
                       ? curUserName + "_" + newRecord.EmployeeId
-                      : props.currentUser.Title + "_" + newRecord.EmployeeId
+                      : // : props.currentUser.Title + "_" + newRecord.EmployeeId
+                        ""
                   );
+                  console.log(curUserName, newRecord.EmployeeId, folderName);
+
                   onFormChange(newRecord);
                 }}
               />
@@ -472,6 +532,7 @@ const SubmitHS = (props: any): JSX.Element => {
                   setNewRecord({ ...newRecord });
                   onFormChange(newRecord);
                 }}
+                disabled={true}
               />
             </div>
           </div>
@@ -480,37 +541,37 @@ const SubmitHS = (props: any): JSX.Element => {
           <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
             <Label style={{ width: "18%" }}>
               CHARGE CODE:
-              {/* <span style={{ color: "red" }}> *</span> */}
+              <span style={{ color: "red" }}> *</span>
             </Label>
             <div className={styles.FormInputSec}>
               <TextField
                 placeholder="A1B2C3"
                 maxLength={6}
-                onBlur={(e: any) => {
-                  // let result = validateText(e.target.value);
-                  // if (!result) {
-                  //   alert("Charge Code should be 6 digit alpha numeric value.");
-                  //   setIsValidCharCode(false);
-                  // } else {
-                  //   setIsValidCharCode(true);
-                  // }
+                // onBlur={(e: any) => {
+                // let result = validateText(e.target.value);
+                // if (!result) {
+                //   alert("Charge Code should be 6 digit alpha numeric value.");
+                //   setIsValidCharCode(false);
+                // } else {
+                //   setIsValidCharCode(true);
+                // }
 
-                  let result = e.target.value;
-                  // if (!result) {
-                  //   setIsValidCharCode(false);
-                  // } else {
-                  //   setIsValidCharCode(true);
-                  // }
-                }}
+                // let result = e.target.value;
+                // if (!result) {
+                //   setIsValidCharCode(false);
+                // } else {
+                //   setIsValidCharCode(true);
+                // }
+                // }}
                 onChange={(e: any) => {
                   newRecord.ChargeCode = e.target.value;
                   setNewRecord({ ...newRecord });
-                  // onFormChange(newRecord);
+                  onFormChange(newRecord);
                 }}
               />
             </div>
             <Label className={styles.FormNaveLable}>
-              To find your Employee ID, click
+              To find your Charge Code, click
               <a
                 data-interception="off"
                 target="_blank"
@@ -525,7 +586,10 @@ const SubmitHS = (props: any): JSX.Element => {
 
           {/* SubmittedUser */}
           <div className={styles.FormSec}>
-            <Label style={{ width: "18%" }}>SUBMITTER:</Label>
+            <Label style={{ width: "18%" }}>
+              SUBMITTER:
+              {/* <span style={{ color: "red" }}> *</span> */}
+            </Label>
             <div className={styles.FormInputSec}>
               <PeoplePicker
                 context={props.context}
@@ -537,7 +601,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 principalTypes={[PrincipalType.User]}
                 resolveDelay={1000}
                 onChange={(e) => {
-                  userMail = [];
+                  // userMail = [];
                   newRecord.SubmitterEmail = e.map((data: any) => {
                     return data.id;
                   })[0];
@@ -556,9 +620,10 @@ const SubmitHS = (props: any): JSX.Element => {
                   //       }
                   //     }
                   //   });
-                  //   return data.secondaryText;
+                  // return data.secondaryText;
                   // });
                   setNewRecord({ ...newRecord });
+                  // onFormChange(newRecord);
                 }}
                 // defaultSelectedUsers={
                 //   userMail.length > 0 ? userMail : props.currentUser.Email
@@ -701,6 +766,7 @@ const SubmitHS = (props: any): JSX.Element => {
                 }
                 onClick={() => {
                   setIsSubmit(false), getCurrentObject();
+                  //FolderIDGet();
                 }}
               >
                 {/* {isSubmit ? "SUBMIT" : "SUBMIT"} */}

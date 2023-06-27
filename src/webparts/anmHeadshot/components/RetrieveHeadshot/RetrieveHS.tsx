@@ -8,11 +8,10 @@ import styles from "./RetrieveHS.module.scss";
 import { useState, useEffect } from "react";
 import SPServices from "../SPServices";
 
-const RetrieveHS = (props: any): JSX.Element => 
-{
+const RetrieveHS = (props: any): JSX.Element => {
   console.log(props);
-  const [selectedUser,setSelectedUser]=useState(props.currentUser.Id);
-  const [btnDisable,setbtnDisbale]=useState(false);
+  const [selectedUser, setSelectedUser] = useState(props.currentUser.Id);
+  const [btnDisable, setbtnDisbale] = useState(false);
 
   const getDatas = async (UserID) => {
     await SPServices.SPReadItems({
@@ -22,47 +21,47 @@ const RetrieveHS = (props: any): JSX.Element =>
           FilterKey: "UserName",
           FilterValue: UserID,
           Operator: "eq",
-        }
+        },
       ],
-      Select: "*,UserName/Title,UserName/EMail",
+      Select: "*, UserName/Title, UserName/EMail, UserName/ID",
       Expand: "UserName",
-    }).then((res: any) => 
-    {
-      console.log(res);
-      
-      let URL='';  
-      for(let i=0;i<res.length;i++)
-      {
-          if(res[i].EmployeeId)
-          {
-            if(res[i].UserName)
-            {
-              
-              if(res[i].UserName.Title)
-              {
-                let userName=res[i].UserName.Title.split(',');
-                let URLSecondHalf="";
-                URLSecondHalf=userName[0].trim()+"_"+userName[1].trim()+"_"+res[i].EmployeeId
-                URL="https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/"+URLSecondHalf
+    })
+      .then((res: any) => {
+        console.log(res);
+
+        let URL = "";
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].EmployeeId) {
+            if (res[i].UserName) {
+              if (res[i].UserName.Title) {
+                let userName = res[i].UserName.Title.split(",");
+                let URLSecondHalf = "";
+                URLSecondHalf =
+                  userName[0].trim() +
+                  "_" +
+                  userName[1].trim() +
+                  "_" +
+                  res[i].EmployeeId;
+                URL =
+                  "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/HeadshotAttachments/" +
+                  URLSecondHalf;
               }
             }
             break;
-            
           }
-      }
-      if(URL)
-      {
-        window.open(URL, '_blank');
-      }
-      else
-      {
-        alert("Could not find headshot for given user. Please try with a different user.");
-      }
-
-    }).catch((error: any) => 
-    {
-        alert("Something went wrong. Please contact system admin.")
-    });
+        }
+        debugger;
+        if (URL) {
+          window.open(URL, "_blank");
+        } else {
+          alert(
+            "Could not find headshot for given user. Please try with a different user."
+          );
+        }
+      })
+      .catch((error: any) => {
+        alert("Something went wrong. Please contact system admin.");
+      });
   };
 
   return (
@@ -83,22 +82,18 @@ const RetrieveHS = (props: any): JSX.Element =>
             principalTypes={[PrincipalType.User]}
             resolveDelay={1000}
             onChange={(e) => {
-              if(e.length>0)
-              {
+              if (e.length > 0) {
                 setSelectedUser(e[0].id);
                 setbtnDisbale(false);
-              }
-              else
-              {
+              } else {
                 setbtnDisbale(true);
               }
-                
             }}
             defaultSelectedUsers={props.currentUser.Email}
             required={true}
           />
         </div>
-        <div className={styles.tooltipSection} style={{display:"none"}}>
+        <div className={styles.tooltipSection} style={{ display: "none" }}>
           <Icon iconName="InfoSolid" className={styles.FormIconSec} />
           <div className={styles.tooltipBody}>
             Must type at least 3 characters of the users last name before a name
@@ -111,9 +106,9 @@ const RetrieveHS = (props: any): JSX.Element =>
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <div style={{ width: "18%" }}></div>
         <button
-         disabled={btnDisable}
+          disabled={btnDisable}
           className={styles.FormBTN}
-          onClick={(e)=>{
+          onClick={(e) => {
             getDatas(selectedUser);
           }}
           style={

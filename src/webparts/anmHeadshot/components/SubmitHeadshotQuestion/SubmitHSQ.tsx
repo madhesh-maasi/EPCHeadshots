@@ -124,7 +124,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
     if (
       datas.Name &&
       datas.EmployeeId &&
-      // datas.ChargeCode &&
+      datas.ChargeCode &&
       datas.Subject &&
       datas.HeadShotQuestion &&
       datas.Division
@@ -286,6 +286,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
               formdata.Title = e.target.value;
               setFormdata({ ...formdata });
             }}
+            disabled={formdata.Title ? true : false}
           />
         </div>
       </div>
@@ -294,7 +295,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
       <div className={styles.FormSec} style={{ margin: "16px 0px" }}>
         <Label style={{ width: "18%" }}>
           CHARGE CODE:
-          {/* <span style={{ color: "red" }}> *</span> */}
+          <span style={{ color: "red" }}> *</span>
         </Label>
         <div className={styles.FormInputSec}>
           <TextField
@@ -311,12 +312,12 @@ const SubmitHSQ = (props: any): JSX.Element => {
             onChange={(e: any) => {
               formdata.ChargeCode = e.target.value;
               setFormdata({ ...formdata });
-              // onDisableButton(formdata);
+              onDisableButton(formdata);
             }}
           />
         </div>
         <Label className={styles.FormNaveLable}>
-          To find your Employee ID, click
+          To find your Charge Code, click
           <a
             data-interception="off"
             target="_blank"

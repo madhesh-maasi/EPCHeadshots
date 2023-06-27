@@ -205,9 +205,7 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               padding: "20px 0px",
             }}
           >
-            <Label style={{ fontSize: "32px" }}>
-              Headshot Submission and Repository
-            </Label>
+            <Label style={{ fontSize: "32px" }}></Label>
           </div>
           {/* Label section end */}
 
@@ -446,7 +444,8 @@ const MainHeadShot = (props: IProp): JSX.Element => {
               onClick={() => {
                 if (!isOverAllNavigate.RAG) {
                   window.open(
-                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
+                    "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Process%20and%20Guidelines.aspx"
+                    // "https://itinfoalvarezandmarsal.sharepoint.com/sites/Marketing/SitePages/Headshot%20Submission%20and%20Retrieval.aspx"
                   );
                   setIsOverAllNavigate({
                     SubmitHS: false,
