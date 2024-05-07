@@ -206,13 +206,12 @@ const SubmitHS = (props: any): JSX.Element => {
 
   /* Library documents datas add function */
   const addLibraryData = async (currentJSON: IListHS) => {
-    debugger;
     await props.sp.web.lists
       .getByTitle(props.LibraryName)
       .rootFolder.folders.add(folderName)
       .then(async (res: any) => {
         for (let i = 0; locFileArray.length > i; i++) {
-          props.sp.web
+          await props.sp.web
             .getFolderByServerRelativeUrl(res.data.ServerRelativeUrl)
             .files.add(locFileArray[i].name, locFileArray[i].content, true)
             .then(async (data: any) => {
@@ -338,7 +337,6 @@ const SubmitHS = (props: any): JSX.Element => {
 
   function onFormChange(data: ISubHeadShot) {
     var isAttachEmpty = arrAttachments.length > 0;
-    console.log("data", data);
 
     if (
       data.Name &&

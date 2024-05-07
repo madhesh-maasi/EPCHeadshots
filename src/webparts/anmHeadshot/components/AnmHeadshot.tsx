@@ -5,7 +5,8 @@ import MainHeadShot from "./MainHeadShot";
 import "./../ExternalRef/styleSheets/Styles.css";
 
 let ListName: string = "Headshot Workspace";
-let LibraryName: string = "Headshot Repository";
+// let LibraryName: string = "Headshot Repository";
+let LibraryName: string = "Headshot Repository_Staging";
 
 export default class AnmHeadshot extends React.Component<
   IAnmHeadshotProps,

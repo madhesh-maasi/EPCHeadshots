@@ -91,6 +91,7 @@ const SubmitHSQ = (props: any): JSX.Element => {
   //adding data
   const addData = async (data) => {
     setIsLoader(true);
+
     await SPServices.SPAddItem({
       Listname: "Headshot Questions",
       RequestJSON: data,
